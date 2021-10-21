@@ -1,0 +1,11 @@
+:root{
+  // 默认字体大小
+  --textDefaultSize: 3.733333vw 
+  --main-color: '#0aa0ee'
+}
+body {
+  font-size: var(--textDefaultSize);
+}
+a {
+  color: var(--van-black);
+}
