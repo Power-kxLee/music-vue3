@@ -29,7 +29,6 @@ const post = ({ url, data, headers, formData = false }:any) => {
 const get = ({url, data}:any) => {
   
   data.realIP =  realIP
-  console.log(data)
   let parame = []
   for (let key in data) {
     const val = data[key]

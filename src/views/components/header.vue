@@ -1,20 +1,28 @@
-<script setup lang="ts">
-import { ref } from 'vue'
-
-defineProps<{ msg: string }>()
-
-const count = ref(0)
-</script>
 
 <template>
   <header class='m-header'>
     <ul>
-      <li class="cur"> <router-link to="/">推荐</router-link></li>
-      <li><router-link to="/like">推荐</router-link></li>
+      <li v-for="item in data" :key="item.to" :class="{'cur': route.path === item.to }"> 
+        <router-link :to="item.to">{{item.name}}</router-link>
+      </li>
     </ul>
   </header>
 </template>
 
+<script setup lang="ts">
+import { ref, reactive, watch } from 'vue'
+import {useStore} from 'vuex'
+import { useRoute } from 'vue-router'
+const store = useStore()
+const route = useRoute()
+let data = ref([])
+data.value = store.state.tabbarData
+watch(() => store.state.tabbarData, (val) => {
+  console.log(val)
+  data.value = val
+})
+
+</script>
 <style scoped lang="scss"> 
   .m-header {
     ul {
