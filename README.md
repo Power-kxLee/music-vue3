@@ -1,11 +1,23 @@
-# Vue 3 + Typescript + Vite
+# 虾听音乐
 
-This template should help get you started developing with Vue 3 and Typescript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+vue3实战项目，服务接口感谢[NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi)支持提供
 
-## Recommended IDE Setup
+前端技术栈:
 
-- [VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volar)
+vue3、vuex、vueRouter、vite、vant-ui、typeScript
 
-## Type Support For `.vue` Imports in TS
+Sass、css用Viewport布局
 
-Since TypeScript cannot handle type information for `.vue` imports, they are shimmed to be a generic Vue component type by default. In most cases this is fine if you don't really care about component prop types outside of templates. However, if you wish to get actual prop types in `.vue` imports (for example to get props validation when using manual `h(...)` calls), you can enable Volar's `.vue` type support plugin by running `Volar: Switch TS Plugin on/off` from VSCode command palette.
+## 初衷
+
+一直都是用的vue2做项目，公司内部还没上vue3，升级就代表着风险，要经过一轮又一轮的资源调配。
+
+学习vue3的过程中，不知道你是否会这样
+
+用vue2已经形成了一套根深蒂固的思维 和 写法，在学习vue3的时候 总是理解的不够清楚
+
+纸上得来终觉浅,绝知此事要躬行
+
+所以就有了这个项目，只有自己动手写一写，应用到成熟项目中去感受，解决这一些坑的时候 才能算是入门吧
+
+项目会持续更新，如果你也想参与进来，一起在开发中学习 赶紧fork吧 期待你的加入
