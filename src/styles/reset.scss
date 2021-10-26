@@ -1,7 +1,11 @@
 :root{
-  // 默认字体大小
-  --textDefaultSize: 3.733333vw 
-  --main-color: '#0aa0ee'
+  // 以375设计稿为例 换算的px
+  --minFontSize: 2vw;  // ~=12px
+  --textDefaultSize: 3.733333vw ; // ~= 16px
+  --headerSize: 5vw; // ~= 18px
+  --main-color: '#0aa0ee';
+  --red: '#f15151';
+  --blue: '#5a5aff';
 }
 body {
   font-size: var(--textDefaultSize);

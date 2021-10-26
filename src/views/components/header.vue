@@ -29,7 +29,7 @@ watch(() => store.state.tabbarData, (val) => {
       display: flex;
       margin: 1.8vh 0;
       li {
-        font-size: 5vw;
+        font-size: var(--headerSize);
         margin:0 1.8vw;
         border-bottom: 3px solid transparent;
       }
