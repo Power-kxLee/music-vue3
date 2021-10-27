@@ -25,6 +25,10 @@ const routes = [
         component: () => import('../views/page/songSheet/hot.vue')
       }
     ]
+  },
+  {
+    path: '/playlist/detail/:id',
+    component: () => import('../views/page/playlist/detail.vue')
   }
 
 ]

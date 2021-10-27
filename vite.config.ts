@@ -7,7 +7,8 @@ export default defineConfig({
   resolve: {
     alias: [
       { find: '@', replacement: resolve(__dirname, 'src') },
-      { find: '@components', replacement: resolve(__dirname, 'src/views/components') }
+      { find: '@components', replacement: resolve(__dirname, 'src/views/components')},
+      { find: '@axios', replacement: resolve(__dirname, 'src/http/index.ts') }
     ]
   }
 })

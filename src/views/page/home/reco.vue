@@ -21,19 +21,24 @@
     <m-panel name="网友精选歌单">
       <van-skeleton :row="5"
                     :loading="musicLoading">
-        <van-swipe
-                   :loop="false"
+        <van-swipe :loop="false"
                    :width="songWidth"
+                   :show-indicators="false"
                    class="song-sheet-swipe">
-          <van-swipe-item  v-for="(item, i) in songList"
-                   :key="i">
+          <van-swipe-item v-for="(item, i) in songList"
+                          :key="i">
             <div class="song-content">
               <div class="song-box"
+                  @click="goPlayList(val)"
                    v-for="val in item"
                    :key="val.userId">
                 <van-image class="coverImgUrl"
                            :src="val.coverImgUrl" />
-                <div class="playCount">{{val.playCount}}</div>
+                <span class="playCount">
+                  <van-icon name="play"
+                            color="white" />
+                  {{parseInt(val.playCount/10000)}}万
+                </span>
                 <div class="name">{{val.name}}</div>
               </div>
             </div>
@@ -50,26 +55,31 @@ import {
   SwipeItem as vanSwipeItem,
   Skeleton as vanSkeleton,
   Image as VanImage,
+  Icon as VanIcon,
 } from "vant";
 import {
-  getCurrentInstance,
   onBeforeMount,
   onMounted,
   ref,
   nextTick,
 } from "vue";
-const instance = getCurrentInstance();
-const _global = instance?.appContext.config.globalProperties;
-const { get } = _global?.axios;
+import { useRouter } from "vue-router";
+import axios from '@axios'
 let images = ref([]);
-let songList = ref({})
+let songList = ref({});
 let bannerLoading = ref(true);
 let musicLoading = ref(true);
-let songWidth = ref(document.body.clientWidth - 40)
+const router = useRouter()
+let songWidth = ref(document.body.clientWidth - 40);
+
+const goPlayList = (val:any) => {
+  const ro = `/playlist/detail/${val.id}`
+  router.push(ro)
+}
 
 onBeforeMount(async () => {
   const bannerFun = async () => {
-    const { banners } = await get({
+    const { banners } = await axios.get({
       url: "/banner",
       data: {
         type: "2",
@@ -79,7 +89,7 @@ onBeforeMount(async () => {
     images.value = banners;
   };
   const playlistsFun = async () => {
-    const { playlists } = await get({
+    const { playlists } = await axios.get({
       url: "/top/playlist",
       data: {
         limit: "12",
@@ -90,17 +100,14 @@ onBeforeMount(async () => {
 
     songList.value = {
       [1]: playlists.slice(0, 6),
-      [2]: playlists.slice(6, 12)
-    }
-    console.log(songList.value)
+      [2]: playlists.slice(6, 12),
+    };
   };
   bannerFun();
   playlistsFun();
 });
 
-onMounted(() => {
-});
-
+onMounted(() => {});
 </script>
 <style lang="scss" scoped>
 #reco::v-deep {
@@ -135,12 +142,12 @@ onMounted(() => {
   }
   .song-sheet-swipe {
     .van-swipe-item {
-      height: 50vh;
+      height: 40vh;
     }
     .song-content {
       display: flex;
       flex-wrap: wrap;
-      justify-content:space-around;
+      justify-content: space-around;
     }
     .song-box {
       flex-basis: 32%;
@@ -155,6 +162,23 @@ onMounted(() => {
         .van-image__error {
           position: relative;
         }
+      }
+      .name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+      }
+      .playCount {
+        position: relative;
+        top:-10px;
+        background: #8e9db2;
+        color: white;
+        font-size: var(--minFontSize);
+        padding: 1vw 2vw;
+        display: inline-block;
+        border-radius: 10px;
       }
     }
   }
