@@ -37,7 +37,7 @@
                 <span class="playCount">
                   <van-icon name="play"
                             color="white" />
-                  {{parseInt(val.playCount/10000)}}万
+                  {{parseInt(val.playCount) / 10000}}万
                 </span>
                 <div class="name">{{val.name}}</div>
               </div>
@@ -65,8 +65,26 @@ import {
 } from "vue";
 import { useRouter } from "vue-router";
 import axios from '@axios'
-let images = ref([]);
-let songList = ref({});
+interface Images {
+  [val:string] : {
+    bannerId: string,
+    pic: string,
+    titleColor: string,
+    typeTitle: string
+  }
+}
+interface SongList {
+  [item:string] : {
+    [val:string] : {
+      userId: string,
+      coverImgUrl: string,
+      playCount: string,
+      name: string
+    }
+  }
+}
+let images = ref<[] | Images>([]);
+let songList = ref<SongList>({});
 let bannerLoading = ref(true);
 let musicLoading = ref(true);
 const router = useRouter()
@@ -79,7 +97,7 @@ const goPlayList = (val:any) => {
 
 onBeforeMount(async () => {
   const bannerFun = async () => {
-    const { banners } = await axios.get({
+    const { banners }:any = await axios.get({
       url: "/banner",
       data: {
         type: "2",
@@ -88,8 +106,9 @@ onBeforeMount(async () => {
     bannerLoading.value = false;
     images.value = banners;
   };
+
   const playlistsFun = async () => {
-    const { playlists } = await axios.get({
+    const { playlists }:any = await axios.get({
       url: "/top/playlist",
       data: {
         limit: "12",

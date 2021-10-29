@@ -1,4 +1,14 @@
-const data = {
+interface List {
+  name: string;
+  to: string;
+}
+
+interface Result {
+  [home:string]: List[];
+  songSheet: List[]
+}
+
+const data:Result = {
   home: [
     {
       name: '推荐',

@@ -14,6 +14,7 @@
     "vuex": "^4.0.2"
   },
   "devDependencies": {
+    "@types/node": "^16.11.6",
     "@vitejs/plugin-vue": "^1.9.3",
     "postcss-px-to-viewport": "^1.1.1",
     "sass": "^1.43.2",

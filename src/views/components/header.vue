@@ -15,10 +15,15 @@ import {useStore} from 'vuex'
 import { useRoute } from 'vue-router'
 const store = useStore()
 const route = useRoute()
-let data = ref([])
+interface Hdata {
+  [item:string]: {
+    to: string,
+    name: string
+  }
+}
+let data = ref<[] | Hdata>([])
 data.value = store.state.tabbarData
 watch(() => store.state.tabbarData, (val) => {
-  console.log(val)
   data.value = val
 })
 
