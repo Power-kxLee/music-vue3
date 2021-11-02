@@ -29,7 +29,7 @@
                           :key="i">
             <div class="song-content">
               <div class="song-box"
-                  @click="goPlayList(val)"
+                   @click="goPlayList(val)"
                    v-for="val in item"
                    :key="val.userId">
                 <van-image class="coverImgUrl"
@@ -57,47 +57,41 @@ import {
   Image as VanImage,
   Icon as VanIcon,
 } from "vant";
-import {
-  onBeforeMount,
-  onMounted,
-  ref,
-  nextTick,
-} from "vue";
+import { onBeforeMount, onMounted, ref, nextTick } from "vue";
 import { useRouter } from "vue-router";
-import axios from '@axios'
+import axios from "@axios";
 interface Images {
-  [val:string] : {
-    bannerId: string,
-    pic: string,
-    titleColor: string,
-    typeTitle: string
-  }
+  [val: string]: {
+    bannerId: string;
+    pic: string;
+    titleColor: string;
+    typeTitle: string;
+  };
 }
 interface SongList {
-  [item:string] : {
-    [val:string] : {
-      userId: string,
-      coverImgUrl: string,
-      playCount: string,
-      name: string
-    }
-  }
+  [item: string]: {
+    [val: string]: {
+      userId: string;
+      coverImgUrl: string;
+      playCount: string;
+      name: string;
+    };
+  };
 }
 let images = ref<[] | Images>([]);
 let songList = ref<SongList>({});
 let bannerLoading = ref(true);
 let musicLoading = ref(true);
-const router = useRouter()
+const router = useRouter();
 let songWidth = ref(document.body.clientWidth - 40);
 
-const goPlayList = (val:any) => {
-  const ro = `/playlist/detail/${val.id}`
-  router.push(ro)
-}
+const goPlayList = (val: any) => {
+  router.push({ path: `/playlist/detail/${val.id}` });
+};
 
 onBeforeMount(async () => {
   const bannerFun = async () => {
-    const { banners }:any = await axios.get({
+    const { banners }: any = await axios.get({
       url: "/banner",
       data: {
         type: "2",
@@ -108,7 +102,7 @@ onBeforeMount(async () => {
   };
 
   const playlistsFun = async () => {
-    const { playlists }:any = await axios.get({
+    const { playlists }: any = await axios.get({
       url: "/top/playlist",
       data: {
         limit: "12",
@@ -191,7 +185,7 @@ onMounted(() => {});
       }
       .playCount {
         position: relative;
-        top:-10px;
+        top: -10px;
         background: #8e9db2;
         color: white;
         font-size: var(--minFontSize);

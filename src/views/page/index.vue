@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import mFooter from "@components/footer.vue";
+import mHeader from "@components/header.vue";
 import { useRoute, onBeforeRouteUpdate, onBeforeRouteLeave } from "vue-router";
 import { useStore } from "vuex";
 import tabbarData from "@/data/tabbarData";
