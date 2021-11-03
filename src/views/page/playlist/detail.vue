@@ -7,31 +7,48 @@
     <van-skeleton title
                   avatar
                   avatar-size="100px"
-                  :row="5"
+                  :row="4"
                   :loading="headLoading" />
-    <div v-if="!headLoading"
-         class="playListHeader">
-      <div class="coverImg">
-        <van-image width="100%"
-                   height="100%"
-                   :src="playListHeader.coverImgUrl" />
-      </div>
-      <div class="pl-right">
-        <h1>{{playListHeader.name}}</h1>
-        <div class="creator">
-          <div class="creatorImg">
-            <van-image width="100%"
-                       height="100%"
-                       :src="playListHeader.creator.backgroundUrl" />
-          </div>
-          <span class="creatorName">{{playListHeader.creator.nickname}}</span>
-          
-        </div>
-        <div class="description">
-          <span>简介:</span>
-          <van-notice-bar :text="playListHeader.description" />
-        </div>
+    <div v-if="!headLoading">
 
+      <div class="playListHeader">
+        <div class="coverImg">
+          <van-image width="100%"
+                     height="100%"
+                     :src="playListHeader.coverImgUrl" />
+        </div>
+        <div class="pl-right">
+          <h1>{{playListHeader.name}}</h1>
+          <div class="creator ">
+            <div class="creatorImg">
+              <van-image width="100%"
+                         height="100%"
+                         :src="playListHeader.creator.backgroundUrl" />
+            </div>
+            <span class="creatorName">{{playListHeader.creator.nickname}}</span>
+
+          </div>
+          <div class="description">
+            <span class="description-name">简介:</span>
+            <van-notice-bar :text="playListHeader.description" />
+            <van-icon name="arrow" />
+          </div>
+
+        </div>
+      </div>
+      <div class="header-util">
+        <div>
+          <van-icon name="like-o" />
+          <span>{{(playListHeader.playCount  /10000) ^ 0 }}万</span>
+        </div>
+        <div>
+          <van-icon name="smile-comment-o" />
+          <span>{{playListHeader.commentCount}}</span>
+        </div>
+        <div>
+          <van-icon name="guide-o" />
+          <span>分享{{playListHeader.shareCount}}</span>
+        </div>
       </div>
     </div>
   </div>
@@ -44,6 +61,7 @@ import {
   Image as VanImage,
   Skeleton as VanSkeleton,
   NoticeBar as VanNoticeBar,
+  Icon as VanIcon,
 } from "vant";
 import {
   useRoute,
@@ -58,6 +76,9 @@ interface playHeader {
   coverImgUrl: string;
   name: string;
   description: string;
+  commentCount: string;
+  playCount: number,
+  shareCount: string,
   creator: {
     backgroundUrl: string;
     nickname: string;
@@ -67,15 +88,19 @@ let playListHeader = ref<playHeader>({
   coverImgUrl: "",
   name: "",
   description: "",
+  playCount: 0,
+  shareCount: '',
+  commentCount: '',
   creator: {
     backgroundUrl: "",
-    nickname: ''
+    nickname: "",
   },
 });
 let oldParams: any = {
   id: "",
 };
 let headLoading = ref(true);
+
 const _initDetailData = async (id: string) => {
   const detailData: any = await axios.get({
     url: "/playlist/detail",
@@ -84,15 +109,22 @@ const _initDetailData = async (id: string) => {
     },
   });
   const { playlist } = detailData;
-  console.log('playlist', playlist)
-  const { coverImgUrl, name, creator, description } = playlist;
+  console.log("playlist", playlist);
+  const { coverImgUrl, name, creator, description, playCount ,commentCount, shareCount} = playlist;
   playListHeader.value = {
     coverImgUrl,
+    commentCount,
     name,
     creator,
     description,
+    shareCount,
+    playCount
   };
   headLoading.value = false;
+};
+
+const initData = (id: string) => {
+  _initDetailData(id);
 };
 
 watch(
@@ -105,7 +137,7 @@ watch(
       headLoading.value = false;
       return;
     }
-    _initDetailData(val.id as string);
+    initData(val.id as string);
   }
 );
 onBeforeRouteLeave((to, from) => {
@@ -113,49 +145,58 @@ onBeforeRouteLeave((to, from) => {
   headLoading.value = true;
 });
 
-_initDetailData(route.params.id as string);
+initData(route.params.id as string);
 const onClickLeft = () => {
   router.back();
 };
 </script>
+<style>
+:root {
+  --whiteColor: white;
+}
+</style>
 <style lang="scss" scoped>
 .header::v-deep {
-  background: linear-gradient(138deg, #333, #b3b3b3);
+  background: linear-gradient(138deg, #ee9ae5, #5961f9);
+  // background: linear-gradient(138deg, #FFF5C3, #9452A5);
   .van-nav-bar {
     background: none;
   }
-  [class*=van-hairline]::after {
+  [class*="van-hairline"]::after {
     content: none;
   }
   .van-nav-bar__title {
     font-size: 16px;
-    color: white;
+    color: var(--whiteColor);
     font-weight: bold;
   }
   .van-nav-bar .van-icon {
-    color: white;
+    color: var(--whiteColor);
     font-size: 18px;
   }
 }
 .playListHeader::v-deep {
   display: flex;
+  padding-bottom: 20px;
   .coverImg {
     height: 130px;
     width: 130px;
-    padding: 0 20px
+    padding: 0 20px;
   }
   .pl-right {
     width: calc(100vw - 150px);
     display: flex;
-    align-content: flex-end;
+    flex-direction: column;
+    justify-content: space-between;
     h1 {
       font-size: 18px;
-      color: white;
+      color: var(--whiteColor);
       font-weight: normal;
       margin: 0px;
     }
     .creator {
       display: flex;
+
       .creatorImg {
         width: 20px;
         height: 20px;
@@ -163,10 +204,52 @@ const onClickLeft = () => {
         border-radius: 100%;
       }
       .creatorName {
-        color: white;
+        color: var(--whiteColor);
         line-height: 20px;
         padding-left: 5px;
       }
+    }
+  }
+  .description {
+    display: flex;
+    .description-name {
+      color: var(--whiteColor);
+      line-height: 20px;
+    }
+    .van-notice-bar {
+      flex: 1;
+      height: 20px;
+      line-height: 20px;
+      background: none;
+      color: var(--whiteColor);
+      padding-left: 5px;
+      .van-notice-bar__wrap {
+        color: var(--whiteColor);
+      }
+    }
+    .van-icon-arrow {
+      line-height: 20px;
+      color: var(--whiteColor);
+      right: 4px;
+    }
+  }
+}
+.header-util::v-deep {
+  display: flex;
+  justify-content: space-around;
+  font-size: 16px;
+  padding-bottom: 10px;
+  div {
+    display: flex;
+    .van-icon {
+      font-size: 18px;
+      color: var(--whiteColor);
+      line-height: 22px;
+    }
+    span {
+      color: var(--whiteColor);
+      line-height: 24px;
+      padding-left: 5px;
     }
   }
 }
