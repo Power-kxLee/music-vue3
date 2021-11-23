@@ -1,91 +1,103 @@
 <template>
-  <div class="header">
+  <div class="songDetail">
 
-    <van-nav-bar title="歌单"
-                 left-arrow
-                 @click-left="onClickLeft" />
-    <van-skeleton title
-                  avatar
-                  avatar-size="100px"
-                  :row="4"
-                  :loading="headLoading" />
-    <div v-if="!headLoading">
+    <div class="header">
+      <van-nav-bar left-arrow
+                   @click-left="onClickLeft">
+        <template #title>
+          <van-notice-bar :text="detailName" />
+        </template>
+      </van-nav-bar>
+    </div>
+    <div class="main">
+      <div class="main-header">
+        <van-skeleton title
+                      avatar
+                      avatar-size="100px"
+                      :row="4"
+                      :loading="headLoading" />
+        <div v-if="!headLoading">
 
-      <div class="playListHeader">
-        <div class="coverImg">
-          <van-image width="100%"
-                     height="100%"
-                     :src="playListHeader.coverImgUrl" />
-        </div>
-        <div class="pl-right">
-          <h1>{{playListHeader.name}}</h1>
-          <div class="creator ">
-            <div class="creatorImg">
+          <div class="playListHeader">
+            <div class="coverImg">
               <van-image width="100%"
                          height="100%"
-                         :src="playListHeader.creator.backgroundUrl" />
+                         :src="playListHeader.coverImgUrl" />
             </div>
-            <span class="creatorName">{{playListHeader.creator.nickname}}</span>
+            <div class="pl-right">
+              <h1>{{playListHeader.name}}</h1>
+              <div class="creator ">
+                <div class="creatorImg">
+                  <van-image width="100%"
+                             height="100%"
+                             :src="playListHeader.creator.backgroundUrl" />
+                </div>
+                <span class="creatorName">{{playListHeader.creator.nickname}}</span>
 
-          </div>
-          <div class="description">
-            <span class="description-name">简介:</span>
-            <van-notice-bar :text="playListHeader.description" />
-            <van-icon name="arrow" />
-          </div>
+              </div>
+              <div class="description">
+                <span class="description-name">简介:</span>
+                <van-notice-bar :text="playListHeader.description" />
+                <van-icon name="arrow" />
+              </div>
 
+            </div>
+          </div>
+          <div class="header-util">
+            <div>
+              <van-icon name="like-o" />
+              <span>{{(playListHeader.playCount  /10000) ^ 0 }}万</span>
+            </div>
+            <div>
+              <van-icon name="smile-comment-o" />
+              <span>{{playListHeader.commentCount}}</span>
+            </div>
+            <div>
+              <van-icon name="guide-o" />
+              <span>分享{{playListHeader.shareCount}}</span>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="header-util">
-        <div>
-          <van-icon name="like-o" />
-          <span>{{(playListHeader.playCount  /10000) ^ 0 }}万</span>
-        </div>
-        <div>
-          <van-icon name="smile-comment-o" />
-          <span>{{playListHeader.commentCount}}</span>
-        </div>
-        <div>
-          <van-icon name="guide-o" />
-          <span>分享{{playListHeader.shareCount}}</span>
-        </div>
+      <div class="main-list">
+
+        <van-skeleton title
+                      :row="20"
+                      :loading="headLoading">
+          <van-list v-if="Object.keys(page).length > 0"
+                    v-model:loading="loading"
+                    loading-text="音乐在路上(Vercel部署的服务器 将就下哈)"
+                    :finished="finished"
+                    @load="onload">
+
+            <div class="song-content">
+              <ul class="song-list">
+                <li class="song-item"
+                    v-for="(item, i) in songList"
+                    :key="item.id">
+                  <b class="song-index">{{Number(i) + 1}}</b>
+                  <div class="song-item-right">
+                    <h4 class="song-name">
+                      <span> {{item.name}} </span>
+                      <span v-if="item.alia[0]">({{item.alia[0]}})</span>
+                    </h4>
+                    <p class="singer">
+                      <span class="sq"
+                            v-if="[1,2].includes(item.no) ">SQ</span>
+                      <span>{{item.ar[0].name}} - {{item.al.name}}</span>
+                    </p>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </van-list>
+        </van-skeleton>
       </div>
     </div>
   </div>
-  <div class="main">
-    <van-skeleton title
-                  :row="20"
-                  :loading="songLoading">
-      <van-list v-model:loading="loading"
-                :finished="finished"
-                @load="onload">
-
-        <div class="song-content">
-          <ul class="song-list">
-            <li class="song-item"
-                v-for="(item, i) in songList"
-                :key="item.id">
-              <b class="song-index">{{Number(i) + 1}}</b>
-              <div class="song-item-right">
-                <h4 class="song-name">
-                  <span> {{item.name}} </span>
-                  <span v-if="item.alia[0]">({{item.alia[0]}})</span>
-                </h4>
-                <p class="singer">
-                  <span class="sq"
-                        v-if="[1,2].includes(item.no) ">SQ</span>
-                  <span>{{item.ar[0].name}} - {{item.al.name}}</span>
-                </p>
-              </div>
-            </li>
-          </ul>
-        </div>
-      </van-list>
-    </van-skeleton>
-  </div>
 </template>
 <script setup lang="ts">
-import { ref, watch, computed } from "vue";
+import { ref, watch, computed, onMounted } from "vue";
 import axios from "@axios";
 import {
   NavBar as VanNavBar,
@@ -132,9 +144,9 @@ let oldParams: any = {
   id: "",
 };
 let headLoading = ref(true);
-let songLoading = ref(false);
+let songLoading = ref(true);
 interface songList {
-  [item: string]: {
+  [item: number]: {
     id: string;
     copyright: number;
     cp: number;
@@ -156,16 +168,8 @@ interface songList {
   };
 }
 let songList = ref<[] | songList>([]);
-
-const loading = ref(false);
-const finished = ref(false);
-const onload = () => {
-  console.log(page.value)
-  // const { songs } = await getSong(songId);
-  // songList.value = songs;
-  loading.value = true
-};
-let page = ref({})
+let detailName = ref('歌单')
+let page: any = ref({});
 // 初始化歌单详情
 const _initDetailData = async (id: string) => {
   const detailData: any = await axios.get({
@@ -208,7 +212,7 @@ const getSong = async (ids: string) => {
       ids,
     },
   });
-  songLoading.value = false;
+
   return detailData;
 };
 
@@ -222,37 +226,66 @@ const handlerids = (ids: any) => {
 };
 
 // 按着20个整理分组
-const handlerPage = (list:any, num:number) => {
-  let i = 0
-  let _key = 0
-  let _arr:any =  []
-  let _obj:any = {}
+const handlerPage = (list: any, num: number) => {
+  let i = 0;
+  let _key = 0;
+  let _arr: any = [];
+  let _obj: any = {};
 
-  list.forEach((item:any) => {
-    i++ 
-    _arr.push(item)
+  list.forEach((item: any) => {
+    i++;
+    _arr.push(item);
     if (i === num) {
-      i = 0
-      _obj[_key] = _arr
-      _key++
-      _arr = []
+      i = 0;
+      _obj[_key] = _arr;
+      _key++;
+      _arr = [];
     }
-  })
-  _obj[_key] = _arr
-  return _obj
-}
+  });
+  _obj[_key] = _arr;
+  return _obj;
+};
 const initData = async (id: string) => {
   // 获取歌单详情
   const playlist = await _initDetailData(id);
-  // 把trackIds数组的id 整成字符串 xxx,xxx
-  
-  const songId = handlerids(playlist.trackIds);
-  page = handlerPage(playlist.trackIds, 20)
-  // 获取歌列表
-  // const { songs } = await getSong(songId);
-  // songList.value = songs;
+
+  page.value = handlerPage(playlist.trackIds, 20);
 };
 
+const loading = ref(false);
+const finished = ref(false);
+let listp: number = 0; // 默认页数
+const onload = async () => {
+  const totalPage = Object.keys(page.value).length; // 总页数
+  // 把数组的id 整成字符串 xxx,xxx
+  const songId = handlerids(page.value[listp]);
+  const { songs } = await getSong(songId);
+  songList.value = [...songList.value, ...songs];
+  loading.value = false;
+  console.log(listp);
+  listp++;
+  if (listp === totalPage - 1) {
+    finished.value = true;
+  }
+};
+// 重新进入页面的时候 重置默认的内容
+const _reset = () => {
+  // 显示骨架屏
+  headLoading.value = true;
+  songLoading.value = true;
+  // 重置默认数据
+  playListHeader.value = defHead;
+  // 清空歌单列表
+  songList.value = [];
+  // 还原默认加载
+  loading.value = true;
+  // 歌单列表加载完毕还原
+  finished.value = false;
+  // 歌单列表还原默认0页
+  listp = 0;
+  // 重置标题
+  detailName.value = '歌单';
+};
 // 监听入参有没有变化
 watch(
   () => route.params,
@@ -267,18 +300,30 @@ watch(
       songLoading.value = false;
       return;
     }
-    headLoading.value = true;
-    songLoading.value = true;
-    playListHeader.value = defHead;
-    songList.value = [];
+    _reset();
     initData(val.id as string);
   }
 );
 onBeforeRouteLeave((to, from) => {
   oldParams = from.params;
 });
+onMounted(() => {
+  const _main: any = document.querySelector(".main");
+  console.log(_main.scrollTop);
+  _main.addEventListener("scroll", () => {
+    const _scrollTop = _main.scrollTop;
+    console.log(_main.scrollTop);
+    // 滚动了120就切换标题
+    if (_scrollTop >= 120) {
+      detailName.value = playListHeader.value.name
+    } else [
+      detailName.value = '歌单'
+    ]
+  });
+});
 
 initData(route.params.id as string);
+
 const onClickLeft = () => {
   router.back();
 };
@@ -289,8 +334,16 @@ const onClickLeft = () => {
 }
 </style>
 <style lang="scss" scoped>
+.songDetail {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+
 .header::v-deep {
-  background: linear-gradient(138deg, #ee9ae5, #5961f9);
+  height: 46px;
+  background: linear-gradient(11deg, #ee9ae5, #5961f9);
   // background: linear-gradient(138deg, #FFF5C3, #9452A5);
   .van-nav-bar {
     background: none;
@@ -307,86 +360,104 @@ const onClickLeft = () => {
     color: var(--whiteColor);
     font-size: 18px;
   }
-}
-.playListHeader::v-deep {
-  display: flex;
-  padding-bottom: 20px;
-  .coverImg {
-    height: 130px;
-    width: 130px;
-    padding: 0 20px;
-  }
-  .pl-right {
-    width: calc(100vw - 150px);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    h1 {
-      font-size: 18px;
-      color: var(--whiteColor);
-      font-weight: normal;
-      margin: 0px;
+  .van-nav-bar__title {
+    width: 100%;
+    text-align: center;
+    margin-left: 50px;
+    .van-notice-bar {
+      background: none;
+      color: white;
+      font-size: 16px;
+      padding: 0px;
     }
-    .creator {
-      display: flex;
+  }
+}
 
-      .creatorImg {
-        width: 20px;
-        height: 20px;
-        overflow: hidden;
-        border-radius: 100%;
+.main::v-deep {
+  height: calc(100vh - 48px);
+  overflow: auto;
+  .main-header {
+    background: linear-gradient(138deg, #ee9ae5, #5961f9);
+    padding-top: 10px;
+  }
+  .playListHeader {
+    display: flex;
+    padding-bottom: 20px;
+    .coverImg {
+      height: 130px;
+      width: 130px;
+      padding: 0 20px;
+    }
+    .pl-right {
+      width: calc(100vw - 150px);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      h1 {
+        font-size: 18px;
+        color: var(--whiteColor);
+        font-weight: normal;
+        margin: 0px;
       }
-      .creatorName {
+      .creator {
+        display: flex;
+
+        .creatorImg {
+          width: 20px;
+          height: 20px;
+          overflow: hidden;
+          border-radius: 100%;
+        }
+        .creatorName {
+          color: var(--whiteColor);
+          line-height: 20px;
+          padding-left: 5px;
+        }
+      }
+    }
+    .description {
+      display: flex;
+      .description-name {
         color: var(--whiteColor);
         line-height: 20px;
+      }
+      .van-notice-bar {
+        flex: 1;
+        height: 20px;
+        line-height: 20px;
+        background: none;
+        color: var(--whiteColor);
+        padding-left: 5px;
+        .van-notice-bar__wrap {
+          color: var(--whiteColor);
+        }
+      }
+      .van-icon-arrow {
+        line-height: 20px;
+        color: var(--whiteColor);
+        right: 4px;
+      }
+    }
+  }
+  .header-util {
+    display: flex;
+    justify-content: space-around;
+    font-size: 16px;
+    padding-bottom: 10px;
+    div {
+      display: flex;
+      .van-icon {
+        font-size: 18px;
+        color: var(--whiteColor);
+        line-height: 22px;
+      }
+      span {
+        color: var(--whiteColor);
+        line-height: 24px;
         padding-left: 5px;
       }
     }
   }
-  .description {
-    display: flex;
-    .description-name {
-      color: var(--whiteColor);
-      line-height: 20px;
-    }
-    .van-notice-bar {
-      flex: 1;
-      height: 20px;
-      line-height: 20px;
-      background: none;
-      color: var(--whiteColor);
-      padding-left: 5px;
-      .van-notice-bar__wrap {
-        color: var(--whiteColor);
-      }
-    }
-    .van-icon-arrow {
-      line-height: 20px;
-      color: var(--whiteColor);
-      right: 4px;
-    }
-  }
-}
-.header-util::v-deep {
-  display: flex;
-  justify-content: space-around;
-  font-size: 16px;
-  padding-bottom: 10px;
-  div {
-    display: flex;
-    .van-icon {
-      font-size: 18px;
-      color: var(--whiteColor);
-      line-height: 22px;
-    }
-    span {
-      color: var(--whiteColor);
-      line-height: 24px;
-      padding-left: 5px;
-    }
-  }
-}
-.main::v-deep {
   .song-item {
     display: flex;
     padding-bottom: 20px;
