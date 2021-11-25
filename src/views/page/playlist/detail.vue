@@ -74,7 +74,8 @@
               <ul class="song-list">
                 <li class="song-item"
                     v-for="(item, i) in songList"
-                    :key="item.id">
+                    :key="item.id"
+                    @click="router.push('/song/detail/'+item.id)">
                   <b class="song-index">{{Number(i) + 1}}</b>
                   <div class="song-item-right">
                     <h4 class="song-name">

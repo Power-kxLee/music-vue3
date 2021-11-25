@@ -3,7 +3,7 @@ const routes = [
   {
     path: '/',
     component: () => import('../views/page/index.vue'),
-    redirect: '/home',
+    redirect: 'home',
     children: [
       {
         path: '/home/like',
@@ -17,18 +17,24 @@ const routes = [
       {
         path: '/songSheet',
         name: 'songSheet',
-        component: () => import('../views/page/songSheet/index.vue')
+        component: () => import('../views/page/home/index.vue')
       },
       {
         path: '/songSheet/hot',
         name: 'songSheet/hot',
-        component: () => import('../views/page/songSheet/hot.vue')
+        component: () => import('../views/page/home/hot.vue')
       }
     ]
   },
   {
     path: '/playlist/detail/:id',
+    name: 'playList',
     component: () => import('../views/page/playlist/detail.vue')
+  },
+  {
+    path: '/song/detail/:id',
+    name: 'songDetail',
+    component: () => import('../views/page/song/detail.vue')
   }
 
 ]
