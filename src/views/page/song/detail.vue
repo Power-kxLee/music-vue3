@@ -1,11 +1,12 @@
 <template>
 <div id="songDetail">
+  <div ref="imgbjDom" class="imgbj"></div>
   <div class="song-header">
     <van-icon name="arrow-down" />
     <van-tabs v-model:active="active"
               swipeable>
       <van-tab title="歌曲" name="song">
-        <m-song></m-song>
+        <m-song  @get-data='getSongData'></m-song>
       </van-tab>
       <van-tab title="歌词" name="lyric">
         <m-lyric></m-lyric>
@@ -17,6 +18,7 @@
 <script setup lang="ts">
 import mSong from './components/song.vue'
 import mLyric from './components/lyric.vue'
+import bjimgs from './images/IMG20211126-103830.jpg'
 import { ref } from "vue";
 import {
   useRoute,
@@ -32,6 +34,15 @@ import axios from "@axios";
 const route = useRoute();
 const id = route.params.id;
 const active = ref('song');
+const imgbjDom = ref(null)
+const bgImg = ref('')
+const getSongData = (data:any) => {
+  const _imgDom:any = imgbjDom.value
+  _imgDom.style.background = `url(${data.al.picUrl}),linear-gradient(138deg, #ee9ae5, #5961f9) `
+  _imgDom.style.backgroundSize = '100% 100%'
+  _imgDom.style.backgroundRepeat = 'no-repeat'
+  
+}
 axios.get({
   url: "/song/url",
   data: {
@@ -47,7 +58,17 @@ axios.get({
 <style scoped lang="scss">
 
   #songDetail::v-deep{
-    background: linear-gradient(138deg, #ee9ae5, #5961f9);
+    position: relative;
+    .imgbj {
+      position: absolute;
+      top:0px;
+      left: 0px;
+      width: 100vw;
+      height: 100vh;
+      filter: blur(60px);
+      background: linear-gradient(138deg, #ee9ae5, #5961f9);
+      
+    }
     .song-header {
       position: relative;
     }

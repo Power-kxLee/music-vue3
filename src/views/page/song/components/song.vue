@@ -1,5 +1,6 @@
 <template>
   <div class="songCpt">
+    <div class="song-switch-img"></div>
     <div class="song-img-warp">
       <div class="song-img-content">
         <div class="song-img">
@@ -17,7 +18,7 @@
           {{item.name}}{{i!== songObj.ar.length - 1 && '/'}}
         </span>
         - 
-        <span>{{songObj.al.name}}</span>
+        <span>{{songObj.alName}}</span>
       </p>
     </div>
   </div>
@@ -31,6 +32,7 @@ const route = useRoute();
 const id = route.params.id;
 let songImg = ref("");
 let songObj: any = ref({});
+const emit = defineEmits(['get-data'])
 const init = () => {
   getSongDetail();
 };
@@ -43,18 +45,21 @@ const getSongDetail = async () => {
     },
   });
   const songs = songDetail.songs[0];
-  console.log(songs);
+  console.log(songs.al.name);
   songObj.value = {
     name: songs.name,
     ar: songs.ar,
     al: songs.al,
+    alName: songs.al.name
   };
+  emit('get-data', songs)
   songImg.value = songs.al.picUrl;
 };
 init();
 </script>
 <style lang="scss" scoped>
 .songCpt::v-deep {
+  position: relative;
   @keyframes rotate365 {
     0% {
       transform: rotate(0deg);
@@ -63,8 +68,21 @@ init();
       transform: rotate(365deg);
     }
   }
+  .song-switch-img {
+    width: 83px;
+    height: 134px;
+    position: absolute;
+    top:5px;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-left: 30px;
+    background: url(../images/needle-ab.png) no-repeat center;
+    background-size: 100%, 100%;
+    z-index: 1;
+  }
   .song-img-warp {
     text-align: center;
+    padding-top: 70px;
   }
   .song-img-content {
     display: inline-block;
@@ -74,7 +92,7 @@ init();
     border-radius: 100%;
     padding: 5px;
     transform: rotate(0deg);
-    animation: rotate365 5s linear infinite;
+    animation: rotate365 10s linear infinite;
   }
   .song-img {
     display: inline-block;
