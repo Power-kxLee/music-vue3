@@ -1,25 +1,32 @@
 <template>
-<div id="songDetail">
+<van-loading class="loadingAll" v-if="loading" size="24px" vertical>
+  <p v-for="(item, i) in loadingName" :key="i">
+    {{i+1}} {{item}}
+  </p>
+</van-loading>
+<div id="songDetail" :class="{'mohu': loading}">
   <div ref="imgbjDom" class="imgbj"></div>
   <div class="song-header">
     <van-icon name="arrow-down" />
-    <van-tabs v-model:active="active"
+    <van-tabs ref="tabs" v-model:active="active"
               swipeable>
       <van-tab title="歌曲" name="song">
-        <m-song  @get-data='getSongData'></m-song>
+        <songPage  @get-data='getSongData'></songPage>
       </van-tab>
       <van-tab title="歌词" name="lyric">
-        <m-lyric></m-lyric>
+        <lyric @lyric-callback="lyricCallback"></lyric>
       </van-tab>
     </van-tabs>
   </div>
+  <player @player-callback="playerCallback"></player>
 </div>
 </template>
 <script setup lang="ts">
-import mSong from './components/song.vue'
-import mLyric from './components/lyric.vue'
+import songPage from './components/song.vue'
+import lyric from './components/lyric.vue'
+import player from './components/player.vue'
 import bjimgs from './images/IMG20211126-103830.jpg'
-import { ref } from "vue";
+import { ref,nextTick } from "vue";
 import {
   useRoute,
   useRouter,
@@ -29,26 +36,47 @@ import {
 import { 
   Tab as vanTab, 
 Tabs as vanTabs,
-Icon as vanIcon } from "vant";
+Icon as vanIcon,
+Loading as vanLoading  } from "vant";
 import axios from "@axios";
 const route = useRoute();
 const id = route.params.id;
 const active = ref('song');
 const imgbjDom = ref(null)
 const bgImg = ref('')
+const loading = ref(true)
+const tabs:any = ref(null)
+const loadingName:any = ref(['免费的服务器,等等吧...😀'])
+// 音乐详细接口 加载完毕后的回调
 const getSongData = (data:any) => {
   const _imgDom:any = imgbjDom.value
   _imgDom.style.background = `url(${data.al.picUrl}),linear-gradient(138deg, #ee9ae5, #5961f9) `
   _imgDom.style.backgroundSize = '100% 100%'
   _imgDom.style.backgroundRepeat = 'no-repeat'
-  
+  loadingName.value.push('音乐详情完毕✌')
+  hideLoading()
 }
-axios.get({
-  url: "/song/url",
-  data: {
-    id,
-  },
-});
+// 获取音乐的播放地址回调
+const playerCallback = (data:any) => {
+  loadingName.value.push('音乐地址检测完毕👏')
+  hideLoading()
+}
+
+// 获取歌词的回调
+const lyricCallback = (data:any) => {
+  loadingName.value.push('音乐歌词加载好啦😎')
+  hideLoading()
+}
+
+const hideLoading = () => {
+  if (loadingName.value.length === 4) {
+    loadingName.value.push('完毕😁')
+    setTimeout(function() {
+      loading.value = false
+    }, 100)
+
+  }
+}
 </script>
 <style >
 :root{
@@ -56,7 +84,20 @@ axios.get({
 }
 </style>
 <style scoped lang="scss">
-
+  .loadingAll {
+    width: 100vw;
+    height: 100vh;
+    justify-content: center;
+    position: absolute;
+    color: white;
+    z-index: 33;
+    p {
+      color:white
+    }
+  }
+  .mohu {
+    filter: blur(60px);
+  }
   #songDetail::v-deep{
     position: relative;
     .imgbj {
@@ -73,7 +114,7 @@ axios.get({
       position: relative;
     }
     .van-icon-arrow-down {
-      color: var(--bgs);
+      color: white;
       font-size: 22px;
       position: absolute;
       top:10px;

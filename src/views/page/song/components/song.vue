@@ -12,13 +12,16 @@
       </div>
     </div>
     <div class="song-introduce">
-      <h4 class="song-name">{{songObj.name}}</h4>
+      <h4 class="song-name">
+        {{songObj.name}}
+        <span v-if="songObj.alName">({{songObj.alName}})</span>
+      </h4>
       <p>
         <span v-for="(item,i ) in songObj.ar" :key="item.id">
-          {{item.name}}{{i!== songObj.ar.length - 1 && '/'}}
+          {{item.name}} {{i!== songObj.ar.length - 1 && '/'}}
         </span>
-        - 
-        <span>{{songObj.alName}}</span>
+      
+        
       </p>
     </div>
   </div>
@@ -45,7 +48,6 @@ const getSongDetail = async () => {
     },
   });
   const songs = songDetail.songs[0];
-  console.log(songs.al.name);
   songObj.value = {
     name: songs.name,
     ar: songs.ar,
@@ -117,6 +119,20 @@ init();
       filter: blur(10px);
       border-radius: 30px;
       z-index: 2;
+    }
+  }
+  .song-introduce {
+    color:white;
+    margin: 0 30px;
+    margin-top: 30px;
+  }
+  .song-name {
+    font-size: 22px;
+    margin: 0;
+    span{
+      font-size: 14px;
+      font-weight: normal;
+      padding-left: 5px;
     }
   }
 }
