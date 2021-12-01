@@ -37,7 +37,7 @@
                 <span class="playCount">
                   <van-icon name="play"
                             color="white" />
-                  {{parseInt(val.playCount) / 10000}}万
+                  {{ Math.floor(val.playCount/ 10000)  }}万
                 </span>
                 <div class="name">{{val.name}}</div>
               </div>
@@ -73,7 +73,7 @@ interface SongList {
     [val: string]: {
       userId: string;
       coverImgUrl: string;
-      playCount: string;
+      playCount: number;
       name: string;
     };
   };
@@ -103,7 +103,7 @@ onBeforeMount(async () => {
 
   const playlistsFun = async () => {
     const { playlists }: any = await axios.get({
-      url: "/top/playlist",
+      url: "/top/playlist/highquality",
       data: {
         limit: "12",
         order: "hot",

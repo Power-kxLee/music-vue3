@@ -18,23 +18,28 @@
       </h4>
       <p>
         <span v-for="(item,i ) in songObj.ar" :key="item.id">
-          {{item.name}} {{i!== songObj.ar.length - 1 && '/'}}
+          {{item.name}} {{i!== songObj.ar.length - 1 ? '/' : ''}}
         </span>
-      
-        
+      </p>
+      <p class="lyric">
+
       </p>
     </div>
   </div>
 </template>
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref,watch } from "vue";
 import { useRoute } from "vue-router";
+import { useStore } from "vuex";
 import axios from "@axios";
 import { Image as VanImage } from "vant";
+import { match } from "assert";
 const route = useRoute();
+const store = useStore()
 const id = route.params.id;
 let songImg = ref("");
 let songObj: any = ref({});
+let lyricData:any = {}
 const emit = defineEmits(['get-data'])
 const init = () => {
   getSongDetail();
@@ -57,10 +62,32 @@ const getSongDetail = async () => {
   emit('get-data', songs)
   songImg.value = songs.al.picUrl;
 };
+
+// 监听歌词返回
+watch(() => store.state.lyric, (val) => {
+  // 整理歌词 变成一个josn
+  val.lrc.lyric.split('\n').forEach(element => {
+    if (element.length < 1) {
+      return false
+    }
+    const time = element.match(/[\[\0-9:0-9.0-9\]]+/)[0]
+    const newTime = time.replace(/(\[|\])+/g, '')
+    const lyric = element.replace(time,'') // 获取当前歌词
+    const s = (newTime.split(':')[0]*60 + newTime.split(':')[1] * 1).toFixed(2) // 获取歌词对应的世界
+    lyricData[s] = lyric
+  });
+})
+
+// 监听播放进度条 返回秒
+watch(() => store.state.playTime, (val) => {
+  
+  console.log(val)
+})
+
 init();
 </script>
 <style lang="scss" scoped>
-.songCpt::v-deep {
+  .songCpt::v-deep {
   position: relative;
   @keyframes rotate365 {
     0% {

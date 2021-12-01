@@ -11,14 +11,14 @@
     <van-tabs ref="tabs" v-model:active="active"
               swipeable>
       <van-tab title="歌曲" name="song">
-        <songPage  @get-data='getSongData'></songPage>
+        <songPage  @get-data='getSongData' ></songPage>
       </van-tab>
       <van-tab title="歌词" name="lyric">
         <lyric @lyric-callback="lyricCallback"></lyric>
       </van-tab>
     </van-tabs>
   </div>
-  <player @player-callback="playerCallback"></player>
+  <player @player-callback="playerCallback" ></player>
 </div>
 </template>
 <script setup lang="ts">
@@ -46,6 +46,7 @@ const imgbjDom = ref(null)
 const bgImg = ref('')
 const loading = ref(true)
 const tabs:any = ref(null)
+const lyricDetail = ref({})
 const loadingName:any = ref(['免费的服务器,等等吧...😀'])
 // 音乐详细接口 加载完毕后的回调
 const getSongData = (data:any) => {
