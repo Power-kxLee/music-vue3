@@ -68,7 +68,7 @@ const getSongDetail = async () => {
 // 监听歌词返回
 watch(() => store.state.lyric, (val) => {
   // 整理歌词 变成一个josn
-  val.lrc.lyric.split('\n').forEach((element:AnyARecord) => {
+  val.lrc.lyric.split('\n').forEach((element:any) => {
     if (element.length < 1) {
       return false
     }
@@ -81,7 +81,7 @@ watch(() => store.state.lyric, (val) => {
       lyric
     })
   });
-  
+  lyricPlay.value = lyricData[0].lyric
   console.log(lyricData)
 })
 
@@ -90,17 +90,14 @@ watch(() => store.state.playTime, (val) => {
   if (lyricData.length > 0 ) {
 
       const time = val.toFixed(2)
-      // console.log(Number(time) , time)
       const d = lyricData.find((value:any) => {
-        if (time < value.s ) {
+        if (Number(time) < Number(value.s) ) {
           return value
         }
       })
       // 获取对应的歌词
       lyricPlay.value = d.lyric
-      // console.log(d.lyric)
   }
-  // console.log(lyricData, val.toFixed(2))
 })
 
 const playState = computed(() => {

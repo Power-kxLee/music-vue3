@@ -14,7 +14,7 @@
          class="imgbj"></div>
     <div class="songWarp">
       <div class="song-header">
-        <van-icon name="arrow-down" />
+        <van-icon name="arrow-down" @click="router.back()" />
         <van-tabs ref="tabs"
                   v-model:active="active"
                   swipeable>
@@ -32,12 +32,12 @@
     </div>
   </div>
 </template>
-<script setup lang="ts">
+<script lang="ts">
 import songPage from "./components/song.vue";
 import lyric from "./components/lyric.vue";
 import player from "./components/player.vue";
 import bjimgs from "./images/IMG20211126-103830.jpg";
-import { ref, nextTick } from "vue";
+import { ref, nextTick, defineComponent } from "vue";
 import {
   useRoute,
   useRouter,
@@ -51,7 +51,13 @@ import {
   Loading as vanLoading,
 } from "vant";
 import axios from "@axios";
+export default defineComponent({
+  name: "songDetail",
+});
+</script>
+<script setup lang="ts">
 const route = useRoute();
+const router = useRouter()
 const id = route.params.id;
 const active = ref("song");
 const imgbjDom = ref(null);
@@ -89,6 +95,7 @@ const hideLoading = () => {
     }, 100);
   }
 };
+
 </script>
 <style >
 :root {
@@ -130,6 +137,7 @@ const hideLoading = () => {
     position: absolute;
     top: 10px;
     left: 20px;
+    z-index: 44;
   }
   .van-tabs__nav {
     background: none;
