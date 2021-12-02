@@ -55,34 +55,25 @@ const getSongDetail = async () => {
     },
   });
   const songs = songDetail.songs[0];
+  // 更新音乐信息
   songObj.value = {
     name: songs.name,
     ar: songs.ar,
     al: songs.al,
     alName: songs.al.name
   };
+  store.commit('update', {
+    key: 'songDetail',
+    value: songs
+  })
   emit('get-data', songs)
   songImg.value = songs.al.picUrl;
 };
 
 // 监听歌词返回
 watch(() => store.state.lyric, (val) => {
-  // 整理歌词 变成一个josn
-  val.lrc.lyric.split('\n').forEach((element:any) => {
-    if (element.length < 1) {
-      return false
-    }
-    const time = element.match(/[\[\0-9:0-9.0-9\]]+/)[0]
-    const newTime = time.replace(/(\[|\])+/g, '')
-    const lyric = element.replace(time,'') // 获取当前歌词
-    const s = (newTime.split(':')[0]*60 + newTime.split(':')[1] * 1).toFixed(2) // 获取歌词对应的世界
-    lyricData.push({
-      s,
-      lyric
-    })
-  });
-  lyricPlay.value = lyricData[0].lyric
-  console.log(lyricData)
+  lyricData = val.lyricData
+  lyricPlay.value = val.lyricData[0].lyric
 })
 
 // 监听播放进度条 返回秒
