@@ -10,7 +10,9 @@
     </div>
     <div class="lyricDetail">
       <ul>
-        <li v-for="item in lyricDetail"></li>
+        <li v-for="item in lyricDetail" :key="item.s">
+          {{item.lyric}}
+        </li>
       </ul>
     </div>
   </div>
@@ -25,7 +27,7 @@ const id = route.params.id;
 const emit = defineEmits(["lyric-callback"]);
 const _title:any = ref({})
 const store = useStore();
-const lyricDetail = ref([])
+const lyricDetail:any = ref([])
 watch(() => store.state.songDetail, (val) => {
   _title.value = {..._title.value, ...val}
   console.log( _title.value )
@@ -56,6 +58,7 @@ const init = async () => {
       lyric,
     });
   });
+  lyricDetail.value = lyricData
   data.lyricData = lyricData;
   emit("lyric-callback", data);
   store.commit("update", {
