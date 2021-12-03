@@ -6,11 +6,14 @@ vue3实战项目，服务接口感谢[NeteaseCloudMusicApi](https://github.com/B
 
 vue3、vuex、vueRouter、vite、vant-ui、typeScript
 
-Sass、css用Viewport布局
+单位使用 Viewport 自适应
+
+在线预览:
+
+[虾听音乐](https://power-kxlee.github.io/music-vue3/dist/index.html#/home)
+⏮▶⏭🎦👏😜😜💖👏
 
 ## 初衷
-
-一直都是用的vue2做项目，公司内部还没上vue3，升级就代表着风险，要经过一轮又一轮的资源调配。
 
 学习vue3的过程中，不知道你是否会这样
 
