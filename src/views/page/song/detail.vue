@@ -71,7 +71,7 @@ const getSongData = (data: any) => {
   const _imgDom: any = imgbjDom.value;
   _imgDom.style.background = `url(${data.al.picUrl}),linear-gradient(138deg, #ee9ae5, #5961f9) `;
   _imgDom.style.backgroundSize = "100% 100%";
-  _imgDom.style.backgroundRepeat = "no-repeat";
+  // _imgDom.style.backgroundRepeat = "no-repeat";
   loadingName.value.push("音乐详情完毕✌");
   hideLoading();
 };

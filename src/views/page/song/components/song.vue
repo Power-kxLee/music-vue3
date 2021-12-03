@@ -1,8 +1,10 @@
 <template>
   <div class="songCpt">
-    <div class="song-switch-img" :class="{'playClass': playState}"></div>
+    <div class="song-switch-img"
+         :class="{'playClass': playState}"></div>
     <div class="song-img-warp">
-      <div class="song-img-content" :class="{'playClass': playState}">
+      <div class="song-img-content"
+           :class="{'playClass': playState}">
         <div class="song-img">
           <van-image width="180"
                      height="180"
@@ -17,7 +19,8 @@
         <span v-if="songObj.alName">({{songObj.alName}})</span>
       </h4>
       <p>
-        <span v-for="(item,i ) in songObj.ar" :key="item.id">
+        <span v-for="(item,i ) in songObj.ar"
+              :key="item.id">
           {{item.name}} {{i!== songObj.ar.length - 1 ? '/' : ''}}
         </span>
       </p>
@@ -28,7 +31,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref,watch,computed } from "vue";
+import { ref, watch, computed } from "vue";
 import { useRoute } from "vue-router";
 import { useStore } from "vuex";
 import axios from "@axios";
@@ -36,13 +39,13 @@ import { Image as VanImage } from "vant";
 import { match } from "assert";
 import { AnyARecord } from "dns";
 const route = useRoute();
-const store = useStore()
+const store = useStore();
 const id = route.params.id;
 let songImg = ref("");
 let songObj: any = ref({});
-let lyricData:any = []
-let lyricPlay = ref('')
-const emit = defineEmits(['get-data'])
+let lyricData: any = [];
+let lyricPlay = ref("");
+const emit = defineEmits(["get-data"]);
 const init = () => {
   getSongDetail();
 };
@@ -60,46 +63,56 @@ const getSongDetail = async () => {
     name: songs.name,
     ar: songs.ar,
     al: songs.al,
-    alName: songs.al.name
+    alName: songs.al.name,
   };
-  store.commit('update', {
-    key: 'songDetail',
-    value: songs
-  })
-  emit('get-data', songs)
+  store.commit("update", {
+    key: "songDetail",
+    value: songs,
+  });
+  emit("get-data", songs);
   songImg.value = songs.al.picUrl;
 };
 
 // 监听歌词返回
-watch(() => store.state.lyric, (val) => {
-  lyricData = val.lyricData
-  lyricPlay.value = val.lyricData[0].lyric
-})
+watch(
+  () => store.state.lyric,
+  (val) => {
+    lyricData = val.lyricData;
+    lyricPlay.value = val.lyricData[0].lyric;
+  }
+);
 
 // 监听播放进度条 返回秒
-watch(() => store.state.playTime, (val) => {
-  if (lyricData.length > 0 ) {
-
-      const time = val.toFixed(2)
-      const d = lyricData.find((value:any) => {
-        if (Number(time) < Number(value.s) ) {
-          return value
+watch(
+  () => store.state.playTime,
+  (val) => {
+    if (lyricData.length > 0) {
+      const time = val.toFixed(2);
+      // console.log(lyricData, time);
+      const d = lyricData.find((value: any) => {
+        if (Number(time) < Number(value.s)) {
+          return value;
         }
-      })
-      // 获取对应的歌词
-      lyricPlay.value = d.lyric
+      });
+      try {
+        // 获取对应的歌词
+        lyricPlay.value = d.lyric;
+      } catch (e) {
+        lyricPlay.value = "";
+      }
+    }
   }
-})
+);
 
 const playState = computed(() => {
-  console.log('playState', store.state.palyState)
-  return store.state.palyState
-})
+  console.log("playState", store.state.palyState);
+  return store.state.palyState;
+});
 
 init();
 </script>
 <style lang="scss" scoped>
-  .songCpt::v-deep {
+.songCpt::v-deep {
   position: relative;
   @keyframes rotate365 {
     0% {
@@ -110,7 +123,6 @@ init();
     }
   }
   @keyframes rotate0 {
-
     100% {
       transform: rotate(0deg);
     }
@@ -119,7 +131,7 @@ init();
     width: 83px;
     height: 134px;
     position: absolute;
-    top:5px;
+    top: 5px;
     left: 50%;
     margin-left: -10px;
     transform: rotate(-28deg);
@@ -145,9 +157,9 @@ init();
     padding: 5px;
     transition: all 1s;
     animation: rotate365 10s linear infinite;
-    animation-play-state:paused;
+    animation-play-state: paused;
     &.playClass {
-      animation-play-state:running;
+      animation-play-state: running;
     }
   }
   .song-img {
@@ -176,14 +188,14 @@ init();
     }
   }
   .song-introduce {
-    color:white;
+    color: white;
     margin: 0 30px;
     margin-top: 30px;
   }
   .song-name {
     font-size: 22px;
     margin: 0;
-    span{
+    span {
       font-size: 14px;
       font-weight: normal;
       padding-left: 5px;

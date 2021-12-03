@@ -8,9 +8,9 @@
         </span>
       </h5>
     </div>
-    <div class="lyricDetail">
+    <div class="lyricDetail" ref="lyricDetailDom">
       <ul>
-        <li v-for="item in lyricDetail" :key="item.s">
+        <li :class="{'cur': item.s === hcurLi}" v-for="item in lyricDetail" :key="item.s" >
           {{item.lyric}}
         </li>
       </ul>
@@ -18,7 +18,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import {ref, watch} from 'vue'
+import {ref, watch, computed} from 'vue'
 import { useRoute } from "vue-router";
 import { useStore } from "vuex";
 import axios from "@axios";
@@ -28,6 +28,8 @@ const emit = defineEmits(["lyric-callback"]);
 const _title:any = ref({})
 const store = useStore();
 const lyricDetail:any = ref([])
+const curLi:any = ref({})
+const lyricDetailDom:any = ref(null)
 watch(() => store.state.songDetail, (val) => {
   _title.value = {..._title.value, ...val}
   console.log( _title.value )
@@ -43,23 +45,22 @@ const init = async () => {
   });
   let lyricData: any = [];
   // 整理歌词 变成一个josn
-  data.lrc.lyric.split("\n").forEach((element: any) => {
+  data.lrc.lyric.split("\n").forEach((element: any, i:number) => {
     if (element.length < 1) {
       return false;
     }
     const time = element.match(/[\[\0-9:0-9.0-9\]]+/)[0];
     const newTime = time.replace(/(\[|\])+/g, "");
     const lyric = element.replace(time, ""); // 获取当前歌词
-    const s = (newTime.split(":")[0] * 60 + newTime.split(":")[1] * 1).toFixed(
-      2
-    ); // 获取歌词对应
+    const s = (newTime.split(":")[0] * 60 + newTime.split(":")[1] * 1).toFixed(2); // 获取歌词对应
     lyricData.push({
+      i,
       s,
       lyric,
     });
   });
-  lyricDetail.value = lyricData
   data.lyricData = lyricData;
+  lyricDetail.value = lyricData
   emit("lyric-callback", data);
   store.commit("update", {
     key: "lyric",
@@ -67,6 +68,43 @@ const init = async () => {
   });
 };
 init();
+
+// 监听播放进度条 返回秒
+watch(() => store.state.playTime, (val) => {
+  if (lyricDetail.value.length > 0 ) {
+
+      const time = val.toFixed(2)
+      const d = lyricDetail.value.find((value:any) => {
+        if (Number(time) < Number(value.s) ) {
+          return value
+        }
+      })
+      try {
+        if (curLi.value.s !== d.s) {
+          curLi.value = {
+            s: d.s,
+            i: d.i
+          }
+        }
+      } catch(e) {
+
+      }
+
+  }
+})
+
+
+const hcurLi = computed(() => {
+  // 根据进度条去滚动到对应的字幕
+  const liDom:any = document.querySelectorAll('.lyricDetail li')[curLi.value.i]
+  if (liDom) {
+    const _parent = liDom.offsetParent
+    lyricDetailDom.value.scrollTop = liDom.offsetTop - _parent.offsetHeight / 2
+  }
+  return curLi.value.s
+})
+
+
 </script>
 <style scoped lang="scss">
   .lyric-content {
@@ -93,6 +131,11 @@ init();
 
       li {
         margin-bottom: 20px;
+        text-shadow: 0px 3px 3px #c3c3c3;
+        &.cur {
+          color: #e91e63;
+          font-size: 18px;
+        }
       }
     }
   }
