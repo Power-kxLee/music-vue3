@@ -168,7 +168,7 @@ interface songList {
     name: string;
   };
 }
-let songList = ref<[] | songList>([]);
+let songList:any = ref<[] | songList>([]);
 let detailName = ref('歌单')
 let page: any = ref({});
 // 初始化歌单详情
