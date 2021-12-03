@@ -130,6 +130,8 @@ const hideLoading = () => {
   }
   .song-header {
     position: relative;
+    overflow: hidden;
+    flex:1;
   }
   .van-icon-arrow-down {
     color: white;

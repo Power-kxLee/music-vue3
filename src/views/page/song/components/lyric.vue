@@ -68,3 +68,32 @@ const init = async () => {
 };
 init();
 </script>
+<style scoped lang="scss">
+  .lyric-content {
+    color: #ededed;
+    margin: 0 20px;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    h4 ,h5{
+      margin: 0px
+    }
+    h4 {
+      margin-bottom: 10px;
+    }
+    h5 {
+      font-size: 14px;
+    }
+    .lyric-title {
+      margin-bottom: 20px;
+    }
+    .lyricDetail {
+      overflow: auto;
+      height: calc(100vh - 72px - 68px - 40px - 44px);
+
+      li {
+        margin-bottom: 20px;
+      }
+    }
+  }
+</style>
