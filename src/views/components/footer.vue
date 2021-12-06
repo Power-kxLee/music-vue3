@@ -30,9 +30,9 @@ const tabbarList = [
     label: '歌单'
   },
   {
-    name: 'contact',
+    name: 'me',
     icon: 'contact',
-    to: '/contact',
+    to: '/me',
     label: '我的'
   }
 ]

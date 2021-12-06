@@ -11,7 +11,7 @@ onBeforeRouteUpdate((to, form) => {
 });
 
 const updateTabbar = (name: string) => {
-  const _rou = ["home", "songSheet"];
+  const _rou = ["home", "songSheet", 'me'];
   _rou.forEach((val, i) => {
     if (name.indexOf(val) === 0) {
       name = val;

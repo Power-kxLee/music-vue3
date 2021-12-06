@@ -28,6 +28,12 @@ const data:Result = {
       name: '热门歌单',
       to: '/songSheet/hot'
     }
+  ],
+  me: [
+    {
+      name: '我的',
+      to: '/me'
+    }
   ]
 }
 export default data

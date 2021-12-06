@@ -23,7 +23,13 @@ const routes = [
         path: '/songSheet/hot',
         name: 'songSheet/hot',
         component: () => import('../views/page/home/hot.vue')
-      }
+      },
+      // 我的
+      {
+        path: '/me',
+        name: 'me',
+        component: () => import('../views/page/home/me.vue')
+      },
     ]
   },
   {
@@ -35,6 +41,12 @@ const routes = [
     path: '/song/detail/:id',
     name: 'songDetail',
     component: () => import('../views/page/song/detail.vue')
+  },
+  // 登录页
+  {
+    path: '/sign/login',
+    name: 'login',
+    component: () => import('../views/page/sign/login.vue')
   }
 
 ]

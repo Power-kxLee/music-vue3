@@ -32,7 +32,7 @@ watch(() => store.state.tabbarData, (val) => {
   .m-header {
     ul {
       display: flex;
-      margin: 1.8vh 0;
+      padding: 10px 0;
       li {
         font-size: var(--headerSize);
         margin:0 1.8vw;

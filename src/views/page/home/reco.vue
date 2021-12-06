@@ -33,6 +33,7 @@
                    v-for="val in item"
                    :key="val.userId">
                 <van-image class="coverImgUrl"
+                          fit="cover"
                            :src="val.coverImgUrl" />
                 <span class="playCount">
                   <van-icon name="play"
@@ -182,6 +183,7 @@ onMounted(() => {});
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
+        height: 38px;
       }
       .playCount {
         position: relative;
