@@ -2,7 +2,7 @@
   <article class="login">
     <main>
       <div class="loginContent">
-        <template v-if="loginState=== 'qr'">
+        <template v-if="newLoginState=== 'qr'">
           <div class="qr">
             <p>扫码二维码登录</p>
             <van-image width="200"
@@ -10,7 +10,7 @@
                        :src="qrImg" />
           </div>
         </template>
-        <template v-if="loginState=== 'phone'">
+        <template v-if="newLoginState=== 'phone'">
 
           <div class="phone">
             <input type="tel"
@@ -60,9 +60,12 @@
         </template>
         <footer>
           <div class="more">
-            <van-icon @click="switchState('phone')" :class="{'cur': loginState === 'phone'}"
+            <van-icon @click="switchState('phone')"
+                      :class="{'cur': newLoginState === 'phone'}"
                       name="phone-o" />
-            <van-icon @click="switchState('qr')" :class="{'cur': loginState === 'qr'}" name="scan" />
+            <van-icon @click="switchState('qr')"
+                      :class="{'cur': newLoginState === 'qr'}"
+                      name="scan" />
           </div>
         </footer>
       </div>
@@ -79,13 +82,15 @@ import {
   Image as VanImage,
   Notify as VanNotify,
 } from "vant";
-import { ref, watch } from "vue";
+import { useStore } from "vuex";
+import { ref, watch, computed } from "vue";
 import axios from "@axios";
 import { useRouter } from "vue-router";
 const loginData: any = ref({
   phone: "",
   captcha: "",
 });
+const store = useStore()
 const phonejd = ref(0);
 const codejd = ref(0);
 const codeShow = ref(false);
@@ -94,6 +99,7 @@ const btnName = ref("");
 const router = useRouter();
 const qrImg = ref("");
 const loginState = ref("phone"); // 默认登录方式 二维码登录
+let saveUnikey: any;
 const handelPhone = function () {
   let num = Math.floor((loginData.value.phone.length / 11) * 100);
   if (num >= 100) {
@@ -139,14 +145,23 @@ const loginbtn = async () => {
     return false;
   }
   btnName.value = "正在登录中...";
-  const resut: any = await axios.get({
-    url: "/login/cellphone",
-    data: loginData.value,
-  });
-  pushLoading.value = false;
+  const resut: any = await axios
+    .get({
+      url: "/login/cellphone",
+      data: loginData.value,
+    })
+    .catch((e) => {
+      Notify({ type: "danger", message: e.message });
+      pushLoading.value = false;
+    });
   if (resut.code === 200) {
     Notify({ type: "success", message: "登录成功" });
-    router.push({ path: "/" });
+     store.commit('update',{
+      key: 'cookie',
+      value: resut.cookie
+    })
+    // 获取登录的信息
+    getLoginStatus();
   } else {
     Notify({ type: "danger", message: resut.message });
   }
@@ -162,7 +177,8 @@ const createQr = async () => {
     },
   });
   const { unikey } = data;
-
+  // 保存key到外局
+  saveUnikey = unikey;
   const qrData: any = await axios.get({
     url: "/login/qr/create",
     data: {
@@ -173,34 +189,86 @@ const createQr = async () => {
   const { qrimg } = qrData.data;
   qrImg.value = qrimg;
 };
-createQr();
 
-// 事实
-watch(() => loginState.value, () => {
 
-})
-
+const newLoginState = computed(() => {
+  // 选择了二维码
+  if (loginState.value === "qr") {
+    checkQr.state = false;
+    checkQr.start(saveUnikey);
+  } else {
+    checkQr.stop();
+  }
+  return loginState.value;
+});
 
 // 切换登录的方式
-const switchState = (state:string) => {
-  loginState.value = state
-}
+const switchState = (state: string) => {
+  loginState.value = state;
+};
 
+// 获取登录状态
+const getLoginStatus = async () => {
+  const value:any =  await axios.get({
+    url: '/login/status',
+    data: {
+      timerstamp:Date.now()
+    }
+  })
+  if (value.data.code === 200) {
+    // 登录的状态保存到loginStatus
+    window.localStorage.setItem('loginStatus', JSON.stringify(value))
+    store.commit('update', {
+      key: 'loginStatus',
+      value
+    })
+  }
+};
 
 
 // 检测扫码的状态
-const checkQr = (key) => {
-  
+const checkQr: any = {
+  state: false,
+  key: "",
   // 开始检测
-  const start = () => {
-
-  }
-
+  start: async (key: string) => {
+    if (checkQr.state) {
+      return false;
+    }
+    const data = await axios.get({
+      url: "/login/qr/check",
+      data: {
+        key,
+        time: Date.now()
+      },
+    });
+    const { code, message, cookie }: any = data;
+    if (code !== 803) {
+      Notify({ type: "warning", message });
+      return setTimeout(async () => {
+        return await checkQr.start(key);
+      }, 2000);
+    }
+    
+    Notify({ type: "success", message: "登录成功" });
+    store.commit('update',{
+      key: 'cookie',
+      value: cookie
+    })
+    // 获取登录的信息
+    getLoginStatus();
+   
+  },
   // 停止检测
-  const stop = () => {
+  stop: () => {
+    checkQr.state = true;
+  },
+};
 
-  }
-}
+// 创建登录二维码
+createQr();
+// 检测是否登录
+getLoginStatus();
 </script>
 <style lang="scss" scoped>
 @keyframes gradient {

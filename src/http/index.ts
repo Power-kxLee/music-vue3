@@ -19,6 +19,7 @@ const post = ({ url, data, headers, formData = false }:any) => {
       url,
       data,
       headers,
+      withCredentials: true
     }).then(res => {
       resolve(res.data)
     }).catch(err => {
@@ -26,7 +27,7 @@ const post = ({ url, data, headers, formData = false }:any) => {
     })
   })
 }
-const get = ({url, data}:any) => {
+const get = ({url, data={}}:any) => {
   
   data.realIP =  realIP
   let parame = []
@@ -36,12 +37,15 @@ const get = ({url, data}:any) => {
   }
   url = ctx + url + '?' + parame.join('&')
   return new Promise((resolve, reject) => {
-    axios.get(url, {
+    axios({
+      url,
+      withCredentials: true
     }).then(res => {
       resolve(res.data)
     }).catch(err => {
       reject(err.data)
     })
+
   })
 }
 const _axios = {
