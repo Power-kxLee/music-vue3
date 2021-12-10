@@ -1,6 +1,5 @@
-import { useStore } from "vuex";
+import {store} from '@/store/index'
 import axios from "@axios";
-let store = useStore()
 
 const getLoginStatus =  async() => {
   const value:any =  await axios.get({
@@ -13,10 +12,12 @@ const getLoginStatus =  async() => {
     // 登录的状态保存到loginStatus
     window.localStorage.setItem('loginStatus', JSON.stringify(value))
     if (store) {
+      
       store.commit('update', {
         key: 'loginStatus',
         value
       })
+      console.log('loginStatus', store.state.loginStatus)
     }
   }
   return value
