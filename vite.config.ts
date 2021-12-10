@@ -12,7 +12,8 @@ export default defineConfig({
     alias: [
       { find: '@', replacement: resolve(__dirname, 'src') },
       { find: '@components', replacement: resolve(__dirname, 'src/views/components')},
-      { find: '@axios', replacement: resolve(__dirname, 'src/http/index.ts') }
+      { find: '@axios', replacement: resolve(__dirname, 'src/http/index.ts') },
+      { find: '@js', replacement: resolve(__dirname, 'src/js') }
     ]
   }
 })
