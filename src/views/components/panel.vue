@@ -9,16 +9,9 @@
   </div>
 </template>
 <script setup lang='ts'>
-import {ref,defineExpose, onMounted} from 'vue'
 const props = defineProps({
   name: String,
 });
-const panel = ref(null)
-const panelRef = ref(null)
-defineExpose({
-  panel,
-  panelRef
-})
 </script>
 <style lang="scss" scoped>
 .m-panel-name {

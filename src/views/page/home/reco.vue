@@ -124,8 +124,8 @@ onBeforeMount(async () => {
 onMounted(() => {});
 </script>
 <style lang="scss" scoped>
-#reco::v-deep {
-  .my-swipe {
+#reco{
+  ::v-deep(.my-swipe) {
     overflow: hidden;
     border-radius: 5px;
     .van-swipe-item {
@@ -154,7 +154,7 @@ onMounted(() => {});
       }
     }
   }
-  .song-sheet-swipe {
+  ::v-deep(.song-sheet-swipe) {
     .van-swipe-item {
       height: 40vh;
     }
@@ -184,6 +184,7 @@ onMounted(() => {});
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         height: 38px;
+        line-height: 19px;
       }
       .playCount {
         position: relative;

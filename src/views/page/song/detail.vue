@@ -14,7 +14,8 @@
          class="imgbj"></div>
     <div class="songWarp">
       <div class="song-header">
-        <van-icon name="arrow-down" @click="router.back()" />
+        <van-icon name="arrow-down"
+                  @click="router.back()" />
         <van-tabs ref="tabs"
                   v-model:active="active"
                   swipeable>
@@ -33,10 +34,7 @@
   </div>
 </template>
 <script lang="ts">
-import songPage from "./components/song.vue";
-import lyric from "./components/lyric.vue";
-import player from "./components/player.vue";
-import bjimgs from "./images/IMG20211126-103830.jpg";
+
 import { ref, nextTick, defineComponent } from "vue";
 import {
   useRoute,
@@ -55,9 +53,14 @@ export default defineComponent({
   name: "songDetail",
 });
 </script>
+
 <script setup lang="ts">
+import songPage from "./components/song.vue";
+import lyric from "./components/lyric.vue";
+import player from "./components/player.vue";
+import bjimgs from "./images/IMG20211126-103830.jpg";
 const route = useRoute();
-const router = useRouter()
+const router = useRouter();
 const id = route.params.id;
 const active = ref("song");
 const imgbjDom = ref(null);
@@ -95,7 +98,6 @@ const hideLoading = () => {
     }, 100);
   }
 };
-
 </script>
 <style >
 :root {
@@ -117,7 +119,7 @@ const hideLoading = () => {
 .mohu {
   filter: blur(60px);
 }
-#songDetail::v-deep {
+#songDetail {
   position: relative;
   .imgbj {
     position: absolute;
@@ -131,37 +133,38 @@ const hideLoading = () => {
   .song-header {
     position: relative;
     overflow: hidden;
-    flex:1;
+    flex: 1;
   }
-  .van-icon-arrow-down {
-    color: white;
-    font-size: 22px;
-    position: absolute;
-    top: 10px;
-    left: 20px;
-    z-index: 44;
-  }
-  .van-tabs__nav {
-    background: none;
-  }
-  .van-tabs__wrap {
-    width: 100px;
-    margin: 0 auto;
-  }
-  .van-tab {
-    color: var(--bgs);
-  }
-  .van-tab--active {
-    color: white;
-  }
-  .arrow-down {
-    font-size: 16px;
-  }
-  .songWarp {
+
+  ::v-deep(.songWarp) {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     height: 100vh;
+    .van-icon-arrow-down {
+      color: white;
+      font-size: 22px;
+      position: absolute;
+      top: 10px;
+      left: 20px;
+      z-index: 44;
+    }
+    .van-tabs__nav {
+      background: none;
+    }
+    .van-tabs__wrap {
+      width: 100px;
+      margin: 0 auto;
+    }
+    .van-tab {
+      color: var(--bgs);
+    }
+    .van-tab--active {
+      color: white;
+    }
+    .arrow-down {
+      font-size: 16px;
+    }
   }
 }
 </style>

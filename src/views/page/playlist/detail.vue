@@ -340,169 +340,168 @@ const onClickLeft = () => {
   flex-direction: column;
   width: 100%;
   height: 100%;
-}
-
-.header::v-deep {
-  height: 46px;
-  background: linear-gradient(11deg, #ee9ae5, #5961f9);
-  // background: linear-gradient(138deg, #FFF5C3, #9452A5);
-  .van-nav-bar {
-    background: none;
-  }
-  [class*="van-hairline"]::after {
-    content: none;
-  }
-  .van-nav-bar__title {
-    font-size: 16px;
-    color: var(--whiteColor);
-    font-weight: bold;
-  }
-  .van-nav-bar .van-icon {
-    color: var(--whiteColor);
-    font-size: 18px;
-  }
-  .van-nav-bar__title {
-    width: 100%;
-    text-align: center;
-    margin-left: 50px;
-    .van-notice-bar {
+  ::v-deep(.header){
+    height: 46px;
+    background: linear-gradient(11deg, #ee9ae5, #5961f9);
+    // background: linear-gradient(138deg, #FFF5C3, #9452A5);
+    .van-nav-bar {
       background: none;
-      color: white;
+    }
+    [class*="van-hairline"]::after {
+      content: none;
+    }
+    .van-nav-bar__title {
       font-size: 16px;
-      padding: 0px;
+      color: var(--whiteColor);
+      font-weight: bold;
     }
-  }
-}
-
-.main::v-deep {
-  height: calc(100vh - 48px);
-  overflow: auto;
-  .main-header {
-    background: linear-gradient(138deg, #ee9ae5, #5961f9);
-    padding-top: 10px;
-  }
-  .playListHeader {
-    display: flex;
-    padding-bottom: 20px;
-    .coverImg {
-      height: 130px;
-      width: 130px;
-      padding: 0 20px;
+    .van-nav-bar .van-icon {
+      color: var(--whiteColor);
+      font-size: 18px;
     }
-    .pl-right {
-      width: calc(100vw - 150px);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      h1 {
-        font-size: 18px;
-        color: var(--whiteColor);
-        font-weight: normal;
-        margin: 0px;
+    .van-nav-bar__title {
+      width: 100%;
+      text-align: center;
+      margin-left: 50px;
+      .van-notice-bar {
+        background: none;
+        color: white;
+        font-size: 16px;
+        padding: 0px;
       }
-      .creator {
+    }
+  }
+  ::v-deep(.main){
+    height: calc(100vh - 48px);
+    overflow: auto;
+    .main-header {
+      background: linear-gradient(138deg, #ee9ae5, #5961f9);
+      padding-top: 10px;
+    }
+    .playListHeader {
+      display: flex;
+      padding-bottom: 20px;
+      .coverImg {
+        height: 130px;
+        width: 130px;
+        padding: 0 20px;
+      }
+      .pl-right {
+        width: calc(100vw - 150px);
         display: flex;
-
-        .creatorImg {
-          width: 20px;
-          height: 20px;
-          overflow: hidden;
-          border-radius: 100%;
+        flex-direction: column;
+        justify-content: space-between;
+        h1 {
+          font-size: 18px;
+          color: var(--whiteColor);
+          font-weight: normal;
+          margin: 0px;
         }
-        .creatorName {
+        .creator {
+          display: flex;
+
+          .creatorImg {
+            width: 20px;
+            height: 20px;
+            overflow: hidden;
+            border-radius: 100%;
+          }
+          .creatorName {
+            color: var(--whiteColor);
+            line-height: 20px;
+            padding-left: 5px;
+          }
+        }
+      }
+      .description {
+        display: flex;
+        .description-name {
           color: var(--whiteColor);
           line-height: 20px;
+        }
+        .van-notice-bar {
+          flex: 1;
+          height: 20px;
+          line-height: 20px;
+          background: none;
+          color: var(--whiteColor);
+          padding-left: 5px;
+          .van-notice-bar__wrap {
+            color: var(--whiteColor);
+          }
+        }
+        .van-icon-arrow {
+          line-height: 20px;
+          color: var(--whiteColor);
+          right: 4px;
+        }
+      }
+    }
+    .header-util {
+      display: flex;
+      justify-content: space-around;
+      font-size: 16px;
+      padding-bottom: 10px;
+      div {
+        display: flex;
+        .van-icon {
+          font-size: 18px;
+          color: var(--whiteColor);
+          line-height: 22px;
+        }
+        span {
+          color: var(--whiteColor);
+          line-height: 24px;
           padding-left: 5px;
         }
       }
     }
-    .description {
+    .song-item {
       display: flex;
-      .description-name {
-        color: var(--whiteColor);
-        line-height: 20px;
+      padding-bottom: 20px;
+      &:first-child {
+        margin-top: 20px;
       }
-      .van-notice-bar {
-        flex: 1;
-        height: 20px;
-        line-height: 20px;
-        background: none;
-        color: var(--whiteColor);
-        padding-left: 5px;
-        .van-notice-bar__wrap {
-          color: var(--whiteColor);
-        }
+      &:active {
+        background: #f7f7f7;
       }
-      .van-icon-arrow {
-        line-height: 20px;
-        color: var(--whiteColor);
-        right: 4px;
-      }
-    }
-  }
-  .header-util {
-    display: flex;
-    justify-content: space-around;
-    font-size: 16px;
-    padding-bottom: 10px;
-    div {
-      display: flex;
-      .van-icon {
+      .song-index {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 45px;
+        color: #b4b4b4;
         font-size: 18px;
-        color: var(--whiteColor);
-        line-height: 22px;
+        font-weight: normal;
       }
-      span {
-        color: var(--whiteColor);
-        line-height: 24px;
-        padding-left: 5px;
+      .song-item-right {
+        flex: 1;
       }
-    }
-  }
-  .song-item {
-    display: flex;
-    padding-bottom: 20px;
-    &:first-child {
-      margin-top: 20px;
-    }
-    &:active {
-      background: #f7f7f7;
-    }
-    .song-index {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 45px;
-      color: #b4b4b4;
-      font-size: 18px;
-      font-weight: normal;
-    }
-    .song-item-right {
-      flex: 1;
-    }
-    .song-name {
-      margin: 10px 0;
-      margin-bottom: 5px;
-      font-size: 16px;
-    }
-    .singer {
-      margin: 0;
-      color: #878787;
-      display: flex;
-      .sq {
-        color: #f07473;
-        font-size: 12px;
-        height: 13px;
-        border: 1px solid #f39897;
-        background: #fff2f2;
-        border-radius: 3px;
-        padding: 0 2px;
-        transform: scale(0.8);
-        display: block;
-        margin-top: 3px;
-        margin-right: 3px;
+      .song-name {
+        margin: 10px 0;
+        margin-bottom: 5px;
+        font-size: 16px;
+      }
+      .singer {
+        margin: 0;
+        color: #878787;
+        display: flex;
+        .sq {
+          color: #f07473;
+          font-size: 12px;
+          height: 13px;
+          border: 1px solid #f39897;
+          background: #fff2f2;
+          border-radius: 3px;
+          padding: 0 2px;
+          transform: scale(0.8);
+          display: block;
+          margin-top: 3px;
+          margin-right: 3px;
+        }
       }
     }
   }
 }
+
 </style>

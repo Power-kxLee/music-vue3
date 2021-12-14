@@ -98,7 +98,7 @@ const palySong = () => {
 };
 </script>
 <style scoped lang="scss">
-.play-control::v-deep {
+.play-control {
   margin: 20px 0;
   .control {
     padding-top: 10px;

@@ -90,7 +90,7 @@ const loginData: any = ref({
   phone: "",
   captcha: "",
 });
-const store = useStore()
+const store = useStore();
 const phonejd = ref(0);
 const codejd = ref(0);
 const codeShow = ref(false);
@@ -156,10 +156,10 @@ const loginbtn = async () => {
     });
   if (resut.code === 200) {
     Notify({ type: "success", message: "登录成功" });
-     store.commit('update',{
-      key: 'cookie',
-      value: resut.cookie
-    })
+    store.commit("update", {
+      key: "cookie",
+      value: resut.cookie,
+    });
     // 获取登录的信息
     getLoginStatus();
   } else {
@@ -190,7 +190,6 @@ const createQr = async () => {
   qrImg.value = qrimg;
 };
 
-
 const newLoginState = computed(() => {
   // 选择了二维码
   if (loginState.value === "qr") {
@@ -209,22 +208,21 @@ const switchState = (state: string) => {
 
 // 获取登录状态
 const getLoginStatus = async () => {
-  const value:any =  await axios.get({
-    url: '/login/status',
+  const value: any = await axios.get({
+    url: "/login/status",
     data: {
-      timerstamp:Date.now()
-    }
-  })
+      timerstamp: Date.now(),
+    },
+  });
   if (value.data.code === 200) {
     // 登录的状态保存到loginStatus
-    window.localStorage.setItem('loginStatus', JSON.stringify(value))
-    store.commit('update', {
-      key: 'loginStatus',
-      value
-    })
+    window.localStorage.setItem("loginStatus", JSON.stringify(value));
+    store.commit("update", {
+      key: "loginStatus",
+      value,
+    });
   }
 };
-
 
 // 检测扫码的状态
 const checkQr: any = {
@@ -239,7 +237,7 @@ const checkQr: any = {
       url: "/login/qr/check",
       data: {
         key,
-        time: Date.now()
+        time: Date.now(),
       },
     });
     const { code, message, cookie }: any = data;
@@ -249,15 +247,14 @@ const checkQr: any = {
         return await checkQr.start(key);
       }, 2000);
     }
-    
+
     Notify({ type: "success", message: "登录成功" });
-    store.commit('update',{
-      key: 'cookie',
-      value: cookie
-    })
+    store.commit("update", {
+      key: "cookie",
+      value: cookie,
+    });
     // 获取登录的信息
     getLoginStatus();
-   
   },
   // 停止检测
   stop: () => {
@@ -279,7 +276,7 @@ getLoginStatus();
     background: #5961f9;
   }
 }
-.login::v-deep {
+.login {
   overflow: hidden;
   height: 100vh;
   background: linear-gradient(138deg, #ee9ae5, #5961f9);
@@ -288,7 +285,7 @@ getLoginStatus();
     color: white;
     font-size: 16px;
   }
-  .loginContent {
+  ::v-deep(.loginContent) {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -300,13 +297,71 @@ getLoginStatus();
       font-size: 16px;
       text-align: center;
     }
-  }
-  .goform {
-    text-align: center;
-    margin-top: 30px;
-  }
-  .code {
-    margin-top: 20px;
+    .goform {
+      text-align: center;
+      margin-top: 30px;
+    }
+    .code {
+      margin-top: 20px;
+    }
+
+    .custom-button {
+      width: 10px;
+      height: 10px;
+      background: red;
+      border-radius: 100%;
+    }
+    .loginbtn {
+      color: #5961f9;
+      width: 100%;
+      border-radius: 10px;
+      div {
+        display: flex;
+        .van-loading {
+          line-height: normal;
+          margin-right: 10px;
+        }
+        span {
+          line-height: 24px;
+        }
+      }
+      &.nobtn {
+        background: linear-gradient(to right, #ff8664, #ee5365);
+      }
+    }
+    .qr {
+      p {
+        font-size: 16px;
+        color: white;
+        text-align: center;
+        margin-bottom: 10px;
+      }
+    }
+    .more {
+      color: rgb(255, 245, 245);
+      margin-top: 30px;
+      display: flex;
+      justify-content: space-around;
+      .van-icon {
+        width: 28px;
+        height: 28px;
+        border: 1px solid rgb(253, 245, 245);
+        border-radius: 100%;
+        text-align: center;
+        font-size: 22px;
+        &.cur {
+          border-color: #e797e6;
+          color: #e797e6;
+          box-shadow: 0px 0px 12px #d38fe8;
+        }
+        &:before {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+        }
+      }
+    }
   }
   .mark {
     position: absolute;
@@ -314,63 +369,6 @@ getLoginStatus();
     left: 0px;
     font-size: 12px;
     background: white;
-  }
-  .custom-button {
-    width: 10px;
-    height: 10px;
-    background: red;
-    border-radius: 100%;
-  }
-  .loginbtn {
-    color: #5961f9;
-    width: 100%;
-    border-radius: 10px;
-    div {
-      display: flex;
-      .van-loading {
-        line-height: normal;
-        margin-right: 10px;
-      }
-      span {
-        line-height: 24px;
-      }
-    }
-    &.nobtn {
-      background: linear-gradient(to right, #ff8664, #ee5365);
-    }
-  }
-  .qr {
-    p {
-      font-size: 16px;
-      color: white;
-      text-align: center;
-      margin-bottom: 10px;
-    }
-  }
-  .more {
-    color: rgb(255, 245, 245);
-    margin-top: 30px;
-    display: flex;
-    justify-content: space-around;
-    .van-icon {
-      width: 28px;
-      height: 28px;
-      border: 1px solid rgb(253, 245, 245);
-      border-radius: 100%;
-      text-align: center;
-      font-size: 22px;
-      &.cur {
-        border-color: #e797e6;
-        color: #e797e6;
-        box-shadow: 0px 0px 12px #d38fe8;
-      }
-      &:before {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-      }
-    }
   }
 }
 </style>

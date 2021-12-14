@@ -112,7 +112,7 @@ const playState = computed(() => {
 init();
 </script>
 <style lang="scss" scoped>
-.songCpt::v-deep {
+.songCpt {
   position: relative;
   @keyframes rotate365 {
     0% {
