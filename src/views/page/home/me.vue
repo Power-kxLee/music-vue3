@@ -87,6 +87,33 @@
           </van-cell>
 
         </div>
+        <div class="boxdiv">
+          <header>我的评论</header>
+          <van-cell is-link>
+            <template #title>
+              <div class="songlist">
+                <van-image width="25"
+                          height="25"
+                          :src="_resourceInfo.avatarUrl" />
+                <span>{{_resourceInfo.name}} - {{_resourceInfo.artist.name}}</span>
+                <span>
+                  {{_resourceInfo.likedCount}}
+                  <van-icon name="good-job" />
+                </span>
+              </div>
+              <div class="comment">
+                {{_resourceInfo.content}}
+              </div>
+              <p class="time">{{_resourceInfo.time}}</p>
+            </template>
+            <template #right-icon></template>
+          </van-cell>
+          <van-cell is-link>
+            <template #title>
+              查看全部
+            </template>
+          </van-cell>
+        </div>
       </template>
     </main>
   </article>
@@ -94,7 +121,7 @@
 <script setup lang="ts">
 import { Image as VanImage, Icon as VanIcon, Cell as VanCell } from "vant";
 import axios from "@axios";
-import { getLoginStatus } from "@/js/common";
+import { getLoginStatus, setDateYMD } from "@/js/common";
 import { computed, watch, ref } from "vue";
 import { useStore } from "vuex";
 import placesMap from "@/data/placesMap";
@@ -114,13 +141,17 @@ const isLogin = () => {
   }
   return {};
 };
+let _resourceInfo: any = ref({});
 let loginData = isLogin(); // 获取登录后的内容
 const init = () => {
   // 获取用户的详情内容
   initDetail();
   // 获取喜欢的音乐数量
   initLive();
+  // 获取收藏的歌单
   playList();
+  // 获取历史评论
+  historyComment();
 };
 
 const initDetail = async () => {
@@ -189,6 +220,22 @@ const playList = async () => {
   playListData.value = newPlayList;
 };
 
+const historyComment = async () => {
+  let { data }: any = await axios.get({
+    url: "/user/comment/history",
+    data: {
+      uid: loginData.profile.userId,
+      limit: 1,
+    },
+  });
+  let { resourceInfo, user, content,likedCount, time } = data.comments[0];
+  resourceInfo = JSON.parse(resourceInfo);
+  _resourceInfo.value = { ...resourceInfo, ...user };
+  _resourceInfo.value.likedCount = likedCount
+  _resourceInfo.value.content = content
+  _resourceInfo.value.time = setDateYMD(time)
+ 
+};
 init();
 </script>
 <style lang="scss" scoped>
@@ -196,6 +243,10 @@ init();
   overflow: hidden;
   background: linear-gradient(11deg, #ee9ae5, #5961f9);
   height: calc(100vh - 51px);
+  main {
+    overflow: auto;
+    height: calc(100vh - 51px - 50px);
+  }
   ::v-deep(.boxdiv) {
     padding: 10px;
     margin: 20px 10px;

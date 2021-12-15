@@ -1,6 +1,7 @@
 import {store} from '@/store/index'
 import axios from "@axios";
 
+// 获取登录的用户信息
 const getLoginStatus =  async() => {
   const value:any =  await axios.get({
     url: '/login/status',
@@ -23,6 +24,13 @@ const getLoginStatus =  async() => {
   return value
 }
 
+// 根据传入的时间，返回xxxx年xx月xx日
+const setDateYMD = (time:any) => {
+  const date = new Date(time)
+  return `${date.getFullYear()}年${date.getMonth()+1}月${date.getDate()}日`
+}
+
 export {
-  getLoginStatus
+  getLoginStatus,
+  setDateYMD
 }
