@@ -2,7 +2,7 @@
   <article class="me-content">
 
     <main>
-      <div class="user-account boxdiv">
+      <div class="user-account boxdiv" v-if="loading.userData">
         <div class="user-img">
           <van-image width="80"
                      height="80"
@@ -50,7 +50,7 @@
             </template>
             <template #right-icon></template>
           </van-cell>
-          <van-cell is-link>
+          <van-cell is-link >
             <template #title>
               <div class="boxdivlist">
                 <div class="icon">
@@ -65,7 +65,7 @@
             <template #right-icon></template>
           </van-cell>
         </div>
-        <div class="boxdiv">
+        <div class="boxdiv" v-if="loading.playlist">
           <header>收藏的歌单</header>
           <van-cell is-link
                     v-for="item in playListData"
@@ -87,13 +87,15 @@
           </van-cell>
 
         </div>
-        <div class="boxdiv">
+        <div class="boxdiv" v-if="loading.comment">
           <header>我的评论</header>
           <van-cell is-link>
             <template #title>
               <div class="songlist">
                 <van-image width="25"
                           height="25"
+                          round
+                          fit="cover"
                           :src="_resourceInfo.avatarUrl" />
                 <span>{{_resourceInfo.name}} - {{_resourceInfo.artist.name}}</span>
                 <span>
@@ -130,6 +132,12 @@ const userData: any = ref({});
 const _placesMap: any = placesMap;
 const userImg = ref("");
 const playListData: any = ref({});
+const loading = ref({
+  userData: false,
+  playlist: false,
+  comment: false,
+  like: false
+})
 const isLogin = () => {
   const _len = Object.keys(store.state.loginStatus).length;
   if (_len > 0 || localStorage.getItem("loginStatus")) {
@@ -177,6 +185,7 @@ const initDetail = async () => {
   // 比如是1991年 那么就返回 91年
   userData.value.birthday = year.substring(year.length - 2, year.length);
   userImg.value = userData.value.profile.backgroundUrl;
+  loading.value.userData = true
 };
 const initLive = async () => {
   const { ids }: any = await axios.get({
@@ -186,7 +195,7 @@ const initLive = async () => {
     },
   });
   userData.value.likeNum = ids.length;
-  console.log(userData.value);
+  loading.value.like = true
 };
 // 保留多少位小数, 不会四舍五入
 // 如果是整数会直接返回
@@ -203,6 +212,7 @@ const handlePlayCount = (playCount: number) => {
       : toFixed(Number(_playCount) / 10000, 1) + "万";
   return newPlayCount;
 };
+// 获取用户收藏了多少歌单
 const playList = async () => {
   const { playlist }: any = await axios.get({
     url: "/user/playlist",
@@ -218,8 +228,10 @@ const playList = async () => {
     }
   });
   playListData.value = newPlayList;
+  loading.value.playlist = true
 };
 
+// 获取用户的历史评论
 const historyComment = async () => {
   let { data }: any = await axios.get({
     url: "/user/comment/history",
@@ -234,7 +246,7 @@ const historyComment = async () => {
   _resourceInfo.value.likedCount = likedCount
   _resourceInfo.value.content = content
   _resourceInfo.value.time = setDateYMD(time)
- 
+ loading.value.comment = true
 };
 init();
 </script>
