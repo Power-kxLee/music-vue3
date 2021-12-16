@@ -24,12 +24,31 @@ const updateTabbar = (name: string) => {
 updateTabbar(route?.name as string);
 </script>
 <template>
-  <m-header></m-header>
-
-  <router-view v-slot="{ Component }">
-    <keep-alive>
-      <component :is="Component" />
-    </keep-alive>
-  </router-view>
-  <m-footer></m-footer>
+  <div class="homePage">
+    <m-header class="header"></m-header>
+    <div class="pageContent">
+      
+      <router-view  v-slot="{ Component }">
+        <keep-alive>
+          <component :is="Component" />
+        </keep-alive>
+      </router-view>
+    </div>
+    <m-footer class="footer"></m-footer>
+  </div>
 </template>
+<style lang="scss" scoped>
+.homePage {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: linear-gradient(179deg, #e8f2f1 , #ffffff 38%);
+}
+.pageContent {
+  flex: 1;
+  overflow: auto;
+}
+::v-deep(.footer) {
+  position: relative;
+}
+</style>

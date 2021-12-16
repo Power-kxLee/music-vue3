@@ -47,6 +47,12 @@ const routes = [
     path: '/sign/login',
     name: 'login',
     component: () => import('../views/page/sign/login.vue')
+  },
+  // 搜索页
+  {
+    path: '/search',
+    name: 'search',
+    component: () => import('../views/page/search/search.vue')
   }
 
 ]

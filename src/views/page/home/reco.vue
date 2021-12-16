@@ -18,7 +18,7 @@
       </van-skeleton>
     </m-panel>
     <div></div>
-    <m-panel name="网友精选歌单">
+    <m-panel class="panel" name="网友精选歌单">
       <van-skeleton :row="5"
                     :loading="musicLoading">
         <van-swipe :loop="false"
@@ -125,6 +125,9 @@ onMounted(() => {});
 </script>
 <style lang="scss" scoped>
 #reco{
+  .panel {
+    margin-top: 10px;
+  }
   ::v-deep(.my-swipe) {
     overflow: hidden;
     border-radius: 5px;

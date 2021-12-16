@@ -278,11 +278,7 @@ init();
 <style lang="scss" scoped>
 .me-content {
   overflow: hidden;
-  background: linear-gradient(11deg, #ee9ae5, #5961f9);
-  height: calc(100vh - 51px);
   main {
-    overflow: auto;
-    height: calc(100vh - 51px - 50px);
   }
   .follow{
     display: flex;
