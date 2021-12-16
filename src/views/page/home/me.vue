@@ -20,15 +20,14 @@
             <van-icon name="arrow" />
           </router-link>
           <template v-else>
-            <ul>
+            <ul class="follow">
               <li>{{userData.profile.follows}}关注</li>
               <li>{{userData.profile.followeds}}粉丝</li>
-              <li>Lv{{userData.level}}</li>
             </ul>
-            <ul>
+            <ul class="label">
               <li>{{userData.birthday}}年</li>
-              <li>{{userData.province}}{{userData.city}}</li>
-              <li>虾听{{Math.floor(userData.createDays / 365) }}年</li>
+              <li>{{userData.province}} {{userData.city}}</li>
+              <li>虾听 {{Math.floor(userData.createDays / 365) }}年</li>
             </ul>
           </template>
         </div>
@@ -58,7 +57,7 @@
                 </div>
                 <div class="content">
                   <h5>我喜欢的音乐</h5>
-                  <section>{{userData.likeNum}}首</section>
+                  <section>{{likeNum}}首</section>
                 </div>
               </div>
             </template>
@@ -89,18 +88,20 @@
         </div>
         <div class="boxdiv" v-if="loading.comment">
           <header>我的评论</header>
-          <van-cell is-link>
+          <van-cell is-link class="songCell">
             <template #title>
               <div class="songlist">
-                <van-image width="25"
-                          height="25"
-                          round
-                          fit="cover"
-                          :src="_resourceInfo.avatarUrl" />
+                <div class="img">
+                  
+                  <van-image width="25"
+                            height="25"
+                            fit="cover"
+                            :src="_resourceInfo.avatarUrl" />
+                </div>
                 <span>{{_resourceInfo.name}} - {{_resourceInfo.artist.name}}</span>
-                <span>
+                <span class="good-job">
                   {{_resourceInfo.likedCount}}
-                  <van-icon name="good-job" />
+                  <van-icon name="good-job-o" />
                 </span>
               </div>
               <div class="comment">
@@ -121,7 +122,7 @@
   </article>
 </template> 
 <script setup lang="ts">
-import { Image as VanImage, Icon as VanIcon, Cell as VanCell } from "vant";
+import { Image as VanImage, Icon as VanIcon, Cell as VanCell,Toast  } from "vant";
 import axios from "@axios";
 import { getLoginStatus, setDateYMD } from "@/js/common";
 import { computed, watch, ref } from "vue";
@@ -132,11 +133,17 @@ const userData: any = ref({});
 const _placesMap: any = placesMap;
 const userImg = ref("");
 const playListData: any = ref({});
-const loading = ref({
+const likeNum = ref('')
+const loading:any = ref({
   userData: false,
   playlist: false,
   comment: false,
   like: false
+})
+const vanLoading =  Toast.loading({
+  message: '虾快熟了...在等等',
+  forbidClick: true,
+  duration: 0
 })
 const isLogin = () => {
   const _len = Object.keys(store.state.loginStatus).length;
@@ -185,7 +192,9 @@ const initDetail = async () => {
   // 比如是1991年 那么就返回 91年
   userData.value.birthday = year.substring(year.length - 2, year.length);
   userImg.value = userData.value.profile.backgroundUrl;
+
   loading.value.userData = true
+  hideLoading()
 };
 const initLive = async () => {
   const { ids }: any = await axios.get({
@@ -194,8 +203,10 @@ const initLive = async () => {
       uid: loginData.profile.userId,
     },
   });
-  userData.value.likeNum = ids.length;
+  likeNum.value = ids.length;
   loading.value.like = true
+  hideLoading()
+  return ids
 };
 // 保留多少位小数, 不会四舍五入
 // 如果是整数会直接返回
@@ -229,6 +240,7 @@ const playList = async () => {
   });
   playListData.value = newPlayList;
   loading.value.playlist = true
+  hideLoading()
 };
 
 // 获取用户的历史评论
@@ -247,8 +259,21 @@ const historyComment = async () => {
   _resourceInfo.value.content = content
   _resourceInfo.value.time = setDateYMD(time)
  loading.value.comment = true
+ hideLoading()
 };
+
+const hideLoading = () => {
+  for (const i in loading.value) {
+    const state:any = loading.value[i]
+    if (!state) {
+      return false
+    }
+  }
+  vanLoading.clear()
+}
+
 init();
+
 </script>
 <style lang="scss" scoped>
 .me-content {
@@ -258,6 +283,24 @@ init();
   main {
     overflow: auto;
     height: calc(100vh - 51px - 50px);
+  }
+  .follow{
+    display: flex;
+    color: rgb(160, 160, 160);
+    margin: 5px 0;
+    li {
+      padding-right: 10px;
+    }
+  }
+  .label {
+    display: flex;
+    li {
+      border: 1px solid rgb(221, 221, 221);
+      border-radius: 10px;
+      margin-right: 5px;
+      padding: 0 7px;
+      font-size: 12px;
+    }
   }
   ::v-deep(.boxdiv) {
     padding: 10px;
@@ -337,6 +380,37 @@ init();
           color: rgb(133, 133, 133);
           font-size: 13px;
         }
+      }
+    }
+    .songCell {
+      .songlist {
+        display: flex;
+        position: relative;
+        span{
+          color: rgb(150, 150, 150);
+        }
+        .img {
+          width: 25px;
+          height: 25px;
+          border-radius: 5px;
+          overflow: hidden;
+          margin-right: 10px;
+        }
+        .good-job {
+          position: absolute;
+          right: 0px;
+          .van-icon {
+            font-size: 16px;
+          }
+        }
+      }
+      .comment {
+        margin: 5px 0;
+        
+      }
+      .time {
+        font-size: 12px;
+        color: rgb(150, 150, 150);
       }
     }
   }
