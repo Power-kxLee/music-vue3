@@ -30,7 +30,24 @@ const setDateYMD = (time:any) => {
   return `${date.getFullYear()}年${date.getMonth()+1}月${date.getDate()}日`
 }
 
+// 防抖,返回一个函数
+// 使用: debounce(fn, delay)(args)
+const debounce = (fn: any, delay: number) => {
+  
+  return (args: any) => {
+    const _this = this;
+    const _args = args;
+    if (fn.id) {
+      clearTimeout(fn.id);
+    }
+    fn.id = setTimeout(() => {
+      fn.call(_this, _args);
+    }, delay); 
+  };
+};
+
 export {
   getLoginStatus,
-  setDateYMD
+  setDateYMD,
+  debounce
 }

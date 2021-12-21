@@ -14,8 +14,8 @@
     "paths": {
       "@/*": ["src/*"],
       "@components/*": ["src/views/components/"],
-      "@axios": ["src/http/index.ts"],
-      "@js": ["src/js/*"],
+      "@js/common": ["src/js/common.ts"],
+      "@axios": ["src/http/index.ts"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"]
