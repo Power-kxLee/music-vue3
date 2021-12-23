@@ -1,44 +1,51 @@
 <template>
   <div class="searchHead">
-    <van-icon name="arrow-left" />
+    <van-icon name="arrow-left" @click="router.go(-1)"/>
     <van-search v-model="searchVal"
                 shape="round"
                 background="none"
                 :placeholder="placeholder"
+                @search= "querySearch(searchVal)"
                 @update:model-value="updateSearch" />
   </div>
-  <div class="searchStatus"
-       v-show="searchStatus">
-    <van-loading v-show="searchResLoading"
-                 type="spinner"
-                 size="16px" />
-    <van-cell-group v-show="!searchResLoading">
-      <van-cell v-for="item in searchSuggest"
-                :key="item.feature">
-        <template #title>
-          <van-icon name="search" /> <span class="keyword">{{searchVal}}</span><span>{{item.keyword.replace(new RegExp(searchVal), '')}}</span>
-        </template>
-      </van-cell>
-    </van-cell-group>
-  </div>
-  <div v-show="!searchStatus">
+    <router-view></router-view>
+    <!-- 搜索输入文字过程显示的内容 -->
+    <div class="searchStatus"
+        v-show="searchStatus">
+      <van-loading v-show="searchResLoading"
+                  type="spinner"
+                  size="16px" />
+      <van-cell-group v-show="!searchResLoading">
+        <van-cell v-for="item in searchSuggest"
+                  :key="item.feature"
+                  is-link
+                  @click="querySearch(item.keyword)">
+          <template #title>
+            <van-icon name="search" /> <span class="keyword">{{searchVal}}</span><span>{{item.keyword.replace(new RegExp(searchVal), '')}}</span>
+          </template>
+          <template #right-icon></template>
+        </van-cell>
+      </van-cell-group>
+    </div>
+    <!-- 没有搜索显示的内容 -->
+    <div v-show="!searchStatus">
 
-    <article class="hot commonPanel"
-             v-if="hotList.length > 0">
-      <header>热搜榜</header>
-      <ul>
-        <li v-for="(item, i) in hotList"
-            :key="item.score"
-            :class="{'top3': i< 3}">
-          <span class="num">{{i+1}}</span>
-          {{item.searchWord}}
+      <article class="hot commonPanel"
+              v-if="hotList.length > 0">
+        <header>热搜榜</header>
+        <ul>
+          <li v-for="(item, i) in hotList"
+              :key="item.score"
+              :class="{'top3': i< 3}">
+            <span class="num">{{i+1}}</span>
+            {{item.searchWord}}
 
-          <van-icon v-if="item.iconType === 1"
-                    name="fire" />
-        </li>
-      </ul>
-    </article>
-  </div>
+            <van-icon v-if="item.iconType === 1"
+                      name="fire" />
+          </li>
+        </ul>
+      </article>
+    </div>
 </template>
 <script setup lang="ts">
 import { ref, computed } from "vue";
@@ -52,11 +59,16 @@ import {
   CellGroup as VanCellGroup,
   Loading as VanLoading,
 } from "vant";
-import { debounce } from "@js/common";
+import { debounce,c_loading } from "@js/common";
+import { useRouter } from "vue-router";
+import { match } from "assert";
+import resultPage from './searchResult.vue'
 const searchVal = ref("");
 const hotList: any = ref([]);
 const placeholder = ref("请输入搜索关键词");
 const searchResLoading = ref(true);
+const router = useRouter()
+const searchResult = ref([]) // 搜索的结果
 const searchStatus = computed(() => {
   return searchSuggest.value.length > 0;
 });
@@ -101,8 +113,33 @@ const searchRes = async (val: any) => {
     !searchVal.value || searchVal.value.length === 0 ? [] : allMatch;
   
 };
+interface comD {
+  result: {
+    songs: []
+  }
+}
+
+// 去搜索
+const querySearch = async(keywords:string) => {
+  router.push({
+    path: `/search/result/${keywords}`
+  })
+  // const loading = c_loading('努力的搜索中🏃‍♂️🏃‍♂️🏃‍♀️...')
+  
+  // const data = <comD>await axios.get({
+  //   url: '/search',
+  //   data: {
+  //     keywords
+  //   }
+  // })
+  // const {songs} = data.result
+  // searchResult.value = songs
+  // loading.clear()
+}
 
 const updateSearch = async (val: any) => {
+  // 清空搜索结果数据
+  searchResult.value = []
   if (!searchVal.value || searchVal.value.length === 0) {
     // 清空搜索建议
     searchSuggest.value = [];

@@ -1,6 +1,6 @@
 import {store} from '@/store/index'
 import axios from "@axios";
-
+import {Toast}  from "vant";
 // 获取登录的用户信息
 const getLoginStatus =  async() => {
   const value:any =  await axios.get({
@@ -32,8 +32,8 @@ const setDateYMD = (time:any) => {
 
 // 防抖,返回一个函数
 // 使用: debounce(fn, delay)(args)
-const debounce = (fn: any, delay: number) => {
-  
+const debounce = (fn: any, delay: number):any => {
+
   return (args: any) => {
     const _this = this;
     const _args = args;
@@ -46,8 +46,17 @@ const debounce = (fn: any, delay: number) => {
   };
 };
 
+const c_loading = (text:string):any => {
+  return Toast.loading({
+    message: text,
+    forbidClick: true,
+    loadingType: 'spinner',
+  });
+} 
+
 export {
   getLoginStatus,
   setDateYMD,
-  debounce
+  debounce,
+  c_loading
 }

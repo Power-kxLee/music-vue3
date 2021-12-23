@@ -9,7 +9,7 @@ const routes = [
         path: '/home/like',
         name: 'home/like',
         component: () => import('../views/page/home/like.vue')
-      },{
+      }, {
         path: '/home',
         name: 'home',
         component: () => import('../views/page/home/reco.vue')
@@ -52,7 +52,14 @@ const routes = [
   {
     path: '/search',
     name: 'search',
-    component: () => import('../views/page/search/search.vue')
+    component: () => import('../views/page/search/search.vue'),
+    children: [
+      {
+        path: '/search/result/:keyword',
+        name: 'searchResult',
+        component: () => import('../views/page/search/searchResult.vue'),
+      }
+    ]
   }
 
 ]
