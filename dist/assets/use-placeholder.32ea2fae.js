@@ -1,1 +1,0 @@
-import{h as s,E as i,G as u,i as h}from"./vendor.f7f2557a.js";import{u as o}from"./index.d8a3e501.js";var n=a=>{var e=s();return i(()=>u(()=>{e.value=o(a).height})),e};function v(a,e){var r=n(a);return t=>h("div",{class:e("placeholder"),style:{height:r.value?r.value+"px":void 0}},[t()])}export{v as u};
