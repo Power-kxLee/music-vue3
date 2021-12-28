@@ -1,5 +1,6 @@
 // 使用rem布局
 import './styles/reset.scss'
+import './styles/common.scss'
 import 'vant/lib/index.css'
 import {createApp} from 'vue'
 import App from './App.vue'

@@ -83,7 +83,7 @@
                       <span v-if="item.alia[0]">({{item.alia[0]}})</span>
                     </h4>
                     <p class="singer">
-                      <span class="sq"
+                      <span class="sq-icon"
                             v-if="[1,2].includes(item.no) ">SQ</span>
                       <span>{{item.ar[0].name}} - {{item.al.name}}</span>
                     </p>
@@ -486,19 +486,6 @@ const onClickLeft = () => {
         margin: 0;
         color: #878787;
         display: flex;
-        .sq {
-          color: #f07473;
-          font-size: 12px;
-          height: 13px;
-          border: 1px solid #f39897;
-          background: #fff2f2;
-          border-radius: 3px;
-          padding: 0 2px;
-          transform: scale(0.8);
-          display: block;
-          margin-top: 3px;
-          margin-right: 3px;
-        }
       }
     }
   }

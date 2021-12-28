@@ -1,51 +1,61 @@
 <template>
-  <div class="searchHead">
-    <van-icon name="arrow-left" @click="router.go(-1)"/>
-    <van-search v-model="searchVal"
-                shape="round"
-                background="none"
-                :placeholder="placeholder"
-                @search= "querySearch(searchVal)"
-                @update:model-value="updateSearch" />
+  <div class="searchBox">
+
+    <div class="searchHead">
+      <van-icon name="arrow-left"
+                @click="router.go(-1)" />
+      <van-search v-model="searchVal"
+                  shape="round"
+                  background="none"
+                  :placeholder="placeholder"
+                  @search="querySearch(searchVal)"
+                  @update:model-value="updateSearch" />
+    </div>
+    <div class="bodys">
+
+      <router-view></router-view>
+      <template v-if="route.name==='search'">
+
+        <!-- 搜索输入文字过程显示的内容 -->
+        <div class="searchStatus"
+             v-show="searchStatus">
+          <van-loading v-show="searchResLoading"
+                       type="spinner"
+                       size="16px" />
+          <van-cell-group v-show="!searchResLoading">
+            <van-cell v-for="item in searchSuggest"
+                      :key="item.feature"
+                      is-link
+                      @click="querySearch(item.keyword)">
+              <template #title>
+                <van-icon name="search" /> <span class="keyword">{{searchVal}}</span><span>{{item.keyword.replace(new RegExp(searchVal), '')}}</span>
+              </template>
+              <template #right-icon></template>
+            </van-cell>
+          </van-cell-group>
+        </div>
+        <!-- 没有搜索显示的内容 -->
+        <div v-show="!searchStatus">
+
+          <article class="hot commonPanel"
+                   v-if="hotList.length > 0">
+            <header>热搜榜</header>
+            <ul>
+              <li v-for="(item, i) in hotList"
+                  :key="item.score"
+                  :class="{'top3': i< 3}">
+                <span class="num">{{i+1}}</span>
+                {{item.searchWord}}
+
+                <van-icon v-if="item.iconType === 1"
+                          name="fire" />
+              </li>
+            </ul>
+          </article>
+        </div>
+      </template>
+    </div>
   </div>
-    <router-view></router-view>
-    <!-- 搜索输入文字过程显示的内容 -->
-    <div class="searchStatus"
-        v-show="searchStatus">
-      <van-loading v-show="searchResLoading"
-                  type="spinner"
-                  size="16px" />
-      <van-cell-group v-show="!searchResLoading">
-        <van-cell v-for="item in searchSuggest"
-                  :key="item.feature"
-                  is-link
-                  @click="querySearch(item.keyword)">
-          <template #title>
-            <van-icon name="search" /> <span class="keyword">{{searchVal}}</span><span>{{item.keyword.replace(new RegExp(searchVal), '')}}</span>
-          </template>
-          <template #right-icon></template>
-        </van-cell>
-      </van-cell-group>
-    </div>
-    <!-- 没有搜索显示的内容 -->
-    <div v-show="!searchStatus">
-
-      <article class="hot commonPanel"
-              v-if="hotList.length > 0">
-        <header>热搜榜</header>
-        <ul>
-          <li v-for="(item, i) in hotList"
-              :key="item.score"
-              :class="{'top3': i< 3}">
-            <span class="num">{{i+1}}</span>
-            {{item.searchWord}}
-
-            <van-icon v-if="item.iconType === 1"
-                      name="fire" />
-          </li>
-        </ul>
-      </article>
-    </div>
 </template>
 <script setup lang="ts">
 import { ref, computed } from "vue";
@@ -59,21 +69,22 @@ import {
   CellGroup as VanCellGroup,
   Loading as VanLoading,
 } from "vant";
-import { debounce,c_loading } from "@js/common";
-import { useRouter } from "vue-router";
+import { debounce, c_loading } from "@js/common";
+import { useRouter, useRoute } from "vue-router";
 import { match } from "assert";
-import resultPage from './searchResult.vue'
+import resultPage from "./searchResult.vue";
 const searchVal = ref("");
 const hotList: any = ref([]);
 const placeholder = ref("请输入搜索关键词");
 const searchResLoading = ref(true);
-const router = useRouter()
-const searchResult = ref([]) // 搜索的结果
+const router = useRouter();
+const route = useRoute();
+const searchResult = ref([]); // 搜索的结果
 const searchStatus = computed(() => {
   return searchSuggest.value.length > 0;
 });
 const searchSuggest: any = ref([]); // 搜索的建议结果
-
+console.log("route", route);
 // 热搜榜
 const hot = async () => {
   const { data }: any = await axios.get({
@@ -102,30 +113,31 @@ const searchRes = async (val: any) => {
   });
   searchResLoading.value = false;
   if (Object.keys(result).length < 1) {
-     searchSuggest.value = [{
-       feature: '暂无',
-       keyword: '匹配失败哦'
-     }]
-     return
+    searchSuggest.value = [
+      {
+        feature: "暂无",
+        keyword: "匹配失败哦",
+      },
+    ];
+    return;
   }
   const { allMatch } = result;
   searchSuggest.value =
     !searchVal.value || searchVal.value.length === 0 ? [] : allMatch;
-  
 };
 interface comD {
   result: {
-    songs: []
-  }
+    songs: [];
+  };
 }
 
 // 去搜索
-const querySearch = async(keywords:string) => {
+const querySearch = async (keywords: string) => {
   router.push({
-    path: `/search/result/${keywords}`
-  })
+    path: `/search/result/${keywords}`,
+  });
   // const loading = c_loading('努力的搜索中🏃‍♂️🏃‍♂️🏃‍♀️...')
-  
+
   // const data = <comD>await axios.get({
   //   url: '/search',
   //   data: {
@@ -135,11 +147,14 @@ const querySearch = async(keywords:string) => {
   // const {songs} = data.result
   // searchResult.value = songs
   // loading.clear()
-}
+};
 
 const updateSearch = async (val: any) => {
+  router.push({
+    path: "/search",
+  });
   // 清空搜索结果数据
-  searchResult.value = []
+  searchResult.value = [];
   if (!searchVal.value || searchVal.value.length === 0) {
     // 清空搜索建议
     searchSuggest.value = [];
@@ -154,6 +169,16 @@ const init = () => {
 init();
 </script>
 <style lang="scss" scoped>
+.searchBox{
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  .bodys {
+    flex: 1;
+    overflow: auto;
+  }
+}
 .searchHead {
   display: flex;
   ::v-deep(.van-icon-arrow-left) {
